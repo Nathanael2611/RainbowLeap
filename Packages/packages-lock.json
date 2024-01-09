@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.scrtwpns.mixbox": {
-      "version": "file:C:/Users/natha/OneDrive/Bureau/mixbox-master/unity",
+      "version": "file:../Libs/Mixbox",
       "depth": 0,
       "source": "local",
       "dependencies": {}
