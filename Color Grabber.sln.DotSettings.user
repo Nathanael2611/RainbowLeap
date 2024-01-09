@@ -1,0 +1,6 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=8F0ED7EE_002DFBF0_002D9591_002D9F98_002D50A93CFEECD1_002Fd_003AAssets_002Ff_003APlanet_002Ecs/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
+  &lt;Assembly Path="C:\Users\natha\Color Grabber\Packages\Mixbox.2.0.0\lib\netstandard2.0\Mixbox.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\natha\Color Grabber\Assets\Mixbox.dll" /&gt;&#xD;
+&lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>
