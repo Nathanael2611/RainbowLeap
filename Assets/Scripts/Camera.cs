@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using entity;
 using UnityEngine;
 
 public class Camera : MonoBehaviour

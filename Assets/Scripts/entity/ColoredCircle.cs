@@ -1,30 +1,33 @@
 using UnityEditor;
 using UnityEngine;
 
-[InitializeOnLoad]
-[RequireComponent(typeof (SpriteRenderer))]
-public class ColoredCircle : MonoBehaviour
+namespace entity
 {
+    [InitializeOnLoad]
+    [RequireComponent(typeof (SpriteRenderer))]
+    public class ColoredCircle : MonoBehaviour
+    {
 
-    private SpriteRenderer _spriteRenderer;
+        private SpriteRenderer _spriteRenderer;
     
-    private void Awake()
-    {
-        this._spriteRenderer = this.GetComponent<SpriteRenderer>();
-    }
+        private void Awake()
+        {
+            this._spriteRenderer = this.GetComponent<SpriteRenderer>();
+        }
     
-    private void Start()
-    {
-        //this.color = new Color(Random.Range(0F, 1F), Random.Range(0F, 1F), Random.Range(0F, 1F));
-    }
+        private void Start()
+        {
+            //this.color = new Color(Random.Range(0F, 1F), Random.Range(0F, 1F), Random.Range(0F, 1F));
+        }
 
-    private void Update()
-    {
-    }
+        private void Update()
+        {
+        }
 
-    public Color GetColor()
-    {
-        return this._spriteRenderer.color;
-    }
+        public Color GetColor()
+        {
+            return this._spriteRenderer.color;
+        }
     
+    }
 }

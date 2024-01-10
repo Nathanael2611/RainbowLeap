@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using entity;
 using UnityEngine;
+using util;
 
 public class Planet : MonoBehaviour
 {
