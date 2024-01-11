@@ -24,6 +24,7 @@ namespace input
         private void Update()
         {
             PressManager.Instance = this;
+            
         
             if (Input.GetKeyDown(this.keyToUse))
             {
@@ -36,12 +37,19 @@ namespace input
             if (Input.GetKeyUp(this.keyToUse))
                 this._lastUp = Time.unscaledTime;
 
-            if (this._lastUp > this._lastDown && this._clickPending && (Time.unscaledTime - this._lastDown) > this.doubleClickTime)
+            if (this._lastUp > this._lastDown && (Time.unscaledTime - this._lastDown) > this.doubleClickTime)
             {
-                this.SimpleClick();
-                if (!this._wasHolding)
+                if (this._clickPending)
+                {
+                    this.SimpleClick(); 
+                }
+
+                if (this._wasHolding)
+                {
                     this.HoldStop();
+                }
             }
+            
 
             
             if (this.IsHolding())
@@ -50,6 +58,7 @@ namespace input
                 if (!this._wasHolding)
                     this.HoldStart();
             }
+            
 
         }
 

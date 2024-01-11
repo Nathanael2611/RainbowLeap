@@ -51,6 +51,7 @@
      <Compile Include="Assets\Scripts\input\PressManager.cs" />
      <Compile Include="Assets\Scripts\UI\DirectionRenderer.cs" />
      <Compile Include="Assets\Scripts\Camera.cs" />
+     <Compile Include="Assets\Scripts\entity\PlayerSpriteManager.cs" />
      <Compile Include="Assets\Scripts\entity\ColoredCircle.cs" />
      <Compile Include="Assets\Scripts\input\IInputListener.cs" />
      <Compile Include="Assets\Scripts\entity\Player.cs" />

@@ -11,20 +11,20 @@ namespace entity
     [RequireComponent( typeof(Collider2D) )]
     [RequireComponent( typeof(Rigidbody2D) )]
     [RequireComponent( typeof(Attractor) )]
+    [RequireComponent( typeof(PlayerSpriteManager))]
     public class Player : MonoBehaviour, IInputListener
     {
     
         public static Player ThePlayer;
     
         private Rigidbody2D     _rigidBody;
+        private PlayerSpriteManager _spriteManager;
         private Collider2D      _collider2D;
         private Attractor       _attractor;
         private SpriteRenderer  _spriteRenderer;
-        private float           _aimValue, _aimAngle, _turnAngle, _aimStop;
-        private Vector2         _aimDirection,
-            _pointHit;
+        private float           _aimValue, _aimAngle, _turnAngle, _aimStop, _aimFactor = 1;
+        private Vector2         _aimDirection;
         private GameObject      _objectHit;
-        private bool            _nextDirection = true;
         private bool            _onGround = false;
 
         private float _turnValue, _lastJump;
@@ -39,6 +39,7 @@ namespace entity
             this._spriteRenderer = this.GetComponent<SpriteRenderer>();
             this._collider2D = this.GetComponent<Collider2D>();
             this._attractor = this.GetComponent<Attractor>();
+            this._spriteManager = this.GetComponent<PlayerSpriteManager>();
         }
 
         private void Start()
@@ -66,7 +67,7 @@ namespace entity
         {
             if (PressManager.Instance.IsHolding())
             {
-                this._aimValue += Time.unscaledDeltaTime * (this._nextDirection ? 1 : -1);
+                this._aimValue += Time.unscaledDeltaTime * (this._aimFactor);
             }
 
             if (Time.unscaledTime - this._lastJump > 1)
@@ -76,18 +77,16 @@ namespace entity
             //this._aimAngle = 
             if (this.IsAiming())
             {
-                this._aimAngle = -Mathf.Cos(((this._aimValue) + 2) * 0.5F) * 90;
+                this._aimAngle = (-Mathf.Cos(((this._aimValue) + 2)) * 70) * 1;
             }
             else
             {
                 this._turnAngle = (this.GetNonAimingAngle());
             }
-
-            this._spriteRenderer.flipX = this.IsAiming() ? (this._aimAngle < 0) : (this._turnAngle < 0);
-
+            
             //this.transform.rotation = Quaternion.Euler(0, 0, rot);
 
-            RaycastHit2D? hitResult = this.GetCircleHit();
+            /*RaycastHit2D? hitResult = this.GetCircleHit();
 
         
             if (hitResult.HasValue)
@@ -99,14 +98,14 @@ namespace entity
             else
             {
                 this._objectHit = default;
-            }
+            }*/
             
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
         private void TryGrab(float angle)
         {
-            this._aimDirection = Helpers.Rotate(new Vector2(0, 1), -Mathf.Deg2Rad * this._aimAngle);
+            this._aimDirection = Helpers.Rotate(new Vector2(0, 1), -Mathf.Deg2Rad * angle);
             if (this._objectHit)
             {
                 ColoredCircle coloredCircle = this._objectHit.GetComponent<ColoredCircle>();
@@ -117,20 +116,19 @@ namespace entity
                 }
             }
 
-            this._nextDirection = (this._aimAngle - this._rigidBody.rotation) > 0;
             if (this._onGround)
             {
                 this._rigidBody.AddRelativeForce(this._aimDirection * this.jumpStrength);
             }
             this._lastJump = Time.unscaledTime;
         }
-
+/*
         private RaycastHit2D? GetCircleHit()
         {
             RaycastHit2D? hitResult = null;
-            Vector2 end = Helpers.Rotate(new Vector2(0, 30), -Mathf.Deg2Rad * this._aimAngle);
+            Vector3 worldSpaceDirection = this.transform.TransformDirection(this._aimDirection);
             var position = this._rigidBody.position;
-            this._aimDirection = -(position - end).normalized;
+            this._aimDirection = -worldSpaceDirection.normalized;
             RaycastHit2D[] castList = Physics2D.RaycastAll(position, this._aimDirection, 4);
             foreach (RaycastHit2D hit2D in castList)
             {
@@ -148,10 +146,10 @@ namespace entity
         
             return hitResult;
         }
-
+*/
         public float GetAimAngle()
         {
-            return this._aimAngle;
+            return this.IsAiming() ? (this._aimAngle) : (this._turnAngle);
         }
 
         public Vector2 GetAimDirection()
@@ -159,20 +157,20 @@ namespace entity
             return this._aimDirection;
         }
 
-        public GameObject GetObjectHit()
+        /*public GameObject GetObjectHit()
         {
             return this._objectHit;
-        }
+        }*/
 
-        public Vector2 GetPointHit()
+        /*public Vector2 GetPointHit()
         {
             return this._pointHit;
-        }
-
+        }*/
+/*
         public bool IsAimingForSomething()
         {
             return this._objectHit != null;
-        }
+        }*/
 
         public float GetNonAimingAngle()
         {
@@ -192,7 +190,6 @@ namespace entity
 
         public void SimpleClick()
         {
-            this._aimStop = Time.unscaledTime;
             this.TryGrab(this._turnAngle);
         }
 
@@ -202,12 +199,26 @@ namespace entity
 
         public void HoldStart()
         {
+            this._aimValue = 0;
+            this._aimFactor = this._turnAngle > 0 ? 1 : -1;
         }
 
         public void HoldEnd()
         {
+            this._aimStop = Time.unscaledTime;
             this.TryGrab(this._aimAngle);
         }
+
+        public bool OnGround()
+        {
+            return this._onGround;
+        }
+
+        public Rigidbody2D GetRigidbody()
+        {
+            return this._rigidBody;
+        }
+        
     }
     
     
