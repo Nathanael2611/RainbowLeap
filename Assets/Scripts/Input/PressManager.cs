@@ -6,9 +6,8 @@ namespace input
 {
     public class PressManager : MonoBehaviour
     {
-        
         public static PressManager Instance;
-    
+
         public KeyCode keyToUse = KeyCode.Space;
         public float doubleClickTime = 0.3F;
 
@@ -18,22 +17,23 @@ namespace input
 
         private void Awake()
         {
-            PressManager.Instance = this;
+            Instance = this;
         }
 
         private void Update()
         {
-            PressManager.Instance = this;
-            
-        
+            Instance = this;
+
+
             if (Input.GetKeyDown(this.keyToUse))
             {
-                if(Time.unscaledTime - this._lastDown < this.doubleClickTime)
+                if (Time.unscaledTime - this._lastDown < this.doubleClickTime)
                     this.DoubleClick();
                 else
                     this._clickPending = true;
                 this._lastDown = Time.unscaledTime;
             }
+
             if (Input.GetKeyUp(this.keyToUse))
                 this._lastUp = Time.unscaledTime;
 
@@ -41,7 +41,7 @@ namespace input
             {
                 if (this._clickPending)
                 {
-                    this.SimpleClick(); 
+                    this.SimpleClick();
                 }
 
                 if (this._wasHolding)
@@ -49,17 +49,14 @@ namespace input
                     this.HoldStop();
                 }
             }
-            
 
-            
+
             if (this.IsHolding())
             {
                 this._clickPending = false;
                 if (!this._wasHolding)
                     this.HoldStart();
             }
-            
-
         }
 
         private void HoldStart()
@@ -88,7 +85,7 @@ namespace input
                 listener.DoubleClick();
             }
         }
-    
+
         public void SimpleClick()
         {
             this._clickPending = false;
@@ -100,9 +97,11 @@ namespace input
 
         public float GetHoldTime()
         {
-            return this._lastUp > this._lastDown ? 0 : Math.Max(0, Time.unscaledTime - this._lastDown - this.doubleClickTime);
+            return this._lastUp > this._lastDown
+                ? 0
+                : Math.Max(0, Time.unscaledTime - this._lastDown - this.doubleClickTime);
         }
-    
+
         public bool IsHolding()
         {
             return GetHoldTime() > 0;
@@ -117,6 +116,5 @@ namespace input
         {
             this._listeners.Remove(listener);
         }
-    
     }
 }

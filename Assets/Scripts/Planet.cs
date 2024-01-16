@@ -18,7 +18,7 @@ public class Planet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var differenceColor = this._spriteRenderer.color - Player.ThePlayer.GetColor();
+        //var differenceColor = this._spriteRenderer.color - Player.ThePlayer.GetColor();
 
         Color a = this._spriteRenderer.color;
         Color b = Player.ThePlayer.GetColor();

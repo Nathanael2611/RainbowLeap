@@ -16,6 +16,9 @@ namespace physic
         public Attractor planet = null;
         public bool autoPlanet = true;
 
+        // These objects will not be attracted
+        private List<Attractor> _dontAttract = new();
+
         private void Awake()
         {
             this._rigidBody = this.GetComponent<Rigidbody2D>();
@@ -27,6 +30,15 @@ namespace physic
             if (!this._rigidBody.isKinematic) 
                 this._rigidBody.velocity = startVelocity;
         
+        }
+
+        public bool DoAttract(Attractor attractor)
+        {
+            return !this._dontAttract.Contains(attractor);
+        }
+        public void DontAttract(Attractor other)
+        {
+            this._dontAttract.Add(other);
         }
 
         private void OnEnable()
@@ -53,7 +65,7 @@ namespace physic
             {
                 if (attractor != this)
                     this.Attract(attractor);
-                if (this.autoPlanet)
+                if (attractor.DoAttract(this) && this.autoPlanet)
                 {
                     float attraction = attractor.GetAttractionForce(this);
                     if (attraction > mostAttraction)
@@ -68,6 +80,8 @@ namespace physic
 
         private void Attract(Attractor other)
         {
+            if (!this.DoAttract(other))
+                return;
             Vector3 direction = (this._rigidBody.position - other._rigidBody.position);
             float distance = direction.magnitude;
         

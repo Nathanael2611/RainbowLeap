@@ -3,6 +3,7 @@ using input;
 using physic;
 using Scrtwpns.Mixbox;
 using UnityEngine;
+using UnityEngine.TestTools;
 using util;
 using Color = UnityEngine.Color;
 
@@ -28,9 +29,13 @@ namespace entity
         private bool            _onGround = false;
 
         private float _turnValue, _lastJump;
-    
-        public float jumpStrength = 100;
-    
+
+        public float jumpStrength = 1000, tongueStrength = 1200, tongueMaxDistance;
+
+        private GameObject _tongue = null;
+
+        private Vector2 _lastJumpDirection = Vector2.zero;
+
         private void Awake()
         {
             Player.ThePlayer = this;
@@ -67,7 +72,7 @@ namespace entity
         {
             if (PressManager.Instance.IsHolding())
             {
-                this._aimValue += Time.unscaledDeltaTime * (this._aimFactor);
+                this._aimValue += Time.unscaledDeltaTime ;
             }
 
             if (Time.unscaledTime - this._lastJump > 1)
@@ -77,7 +82,7 @@ namespace entity
             //this._aimAngle = 
             if (this.IsAiming())
             {
-                this._aimAngle = (-Mathf.Cos(((this._aimValue) + 2)) * 70) * 1;
+                this._aimAngle = (Mathf.Sin(this._aimValue) * (70 * this._aimFactor));
             }
             else
             {
@@ -103,7 +108,7 @@ namespace entity
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        private void TryGrab(float angle)
+        private void TryGrab(float angle, bool forceTongue)
         {
             this._aimDirection = Helpers.Rotate(new Vector2(0, 1), -Mathf.Deg2Rad * angle);
             if (this._objectHit)
@@ -119,6 +124,19 @@ namespace entity
             if (this._onGround)
             {
                 this._rigidBody.AddRelativeForce(this._aimDirection * this.jumpStrength);
+                this._lastJumpDirection = this._aimDirection;
+            }
+            if(forceTongue || !this._onGround)
+            {
+                if (!this._tongue)
+                {
+                    this._tongue = new GameObject("Tongue");
+                    //this._tongue.transform.SetParent(this.transform);
+                    this._tongue.AddComponent<Tongue>();
+                    this._tongue.GetComponent<Tongue>().Initialize(this, this.transform.TransformDirection(this._lastJumpDirection), this.tongueStrength, this.tongueMaxDistance);
+                    //Physics2D.IgnoreCollision(this._collider2D, this._tongue.GetComponent<Collider2D>(), true);
+
+                }
             }
             this._lastJump = Time.unscaledTime;
         }
@@ -190,7 +208,7 @@ namespace entity
 
         public void SimpleClick()
         {
-            this.TryGrab(this._turnAngle);
+            this.TryGrab(this._turnAngle, false);
         }
 
         public void DoubleClick()
@@ -206,7 +224,7 @@ namespace entity
         public void HoldEnd()
         {
             this._aimStop = Time.unscaledTime;
-            this.TryGrab(this._aimAngle);
+            this.TryGrab(this._aimAngle, true);
         }
 
         public bool OnGround()
