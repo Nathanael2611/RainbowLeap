@@ -21,6 +21,7 @@ namespace entity
         private float _launchTime = 0;
 
         private Vector2 _lockPoint = Vector2.zero;
+        private Grabbable _grabbable;
 
         private void Awake()
         {
@@ -80,6 +81,11 @@ namespace entity
             positions[1] = this.transform.position;
             this._renderer.SetPositions(positions);
 
+            if (this._grabbable)
+            {
+                this._grabbable.GrabUpdate(this._player);
+            }
+
             var distance = Vector3.Distance(this.transform.position, this._player.transform.position);
             if (distance > this.tongueMaxDistance || Time.time - this._launchTime > 2 || this._lockPoint != Vector2.zero)
             {
@@ -101,8 +107,16 @@ namespace entity
                     this._player.GetRigidbody().velocity = (-(this._player.GetRigidbody().position - this._rigidbody.position).normalized * 10);
                 }
 
-                if(distance < 1)
+                if(distance < 1 && !_grabbable)
                     GameObject.Destroy(this.gameObject);
+            }
+        }
+
+        public void PlayerCollideWith(Grabbable grabbable)
+        {
+            if (this._grabbable == grabbable)
+            {
+                this._grabbable.PlayerGrab(this._player);
             }
         }
 
@@ -110,6 +124,13 @@ namespace entity
         {
             ContactPoint2D contactPoint2D = other.contacts[0];
             this._lockPoint = contactPoint2D.point;
+            GameObject hit = contactPoint2D.collider.gameObject;
+            Grabbable grabbable = hit.GetComponent<Grabbable>();
+            if (grabbable)
+            {
+                this._grabbable = grabbable;
+                this._grabbable.TongueGrab(this, this._player);
+            }
 
         }
     }

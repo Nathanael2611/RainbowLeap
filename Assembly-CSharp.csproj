@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\Entity\Tongue.cs" />
      <Compile Include="Assets\Scripts\Input\IInputListener.cs" />
      <Compile Include="Assets\Scripts\Input\PressManager.cs" />
+     <Compile Include="Assets\Scripts\Entity\Grabbable.cs" />
      <Compile Include="Assets\Scripts\Entity\DirectionPivot.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Scripts\Input" />
@@ -66,6 +67,7 @@
      <Folder Include="Assets\Scripts" />
      <Folder Include="Assets\Scripts\UI" />
      <Folder Include="Assets\Resources\Miscs" />
+     <Folder Include="Assets\Resources\Materials" />
      <Folder Include="Assets\Resources\Render" />
      <Folder Include="Assets\Scripts\Entity" />
      <Folder Include="Assets\Scenes" />
