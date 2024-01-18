@@ -2,8 +2,10 @@ using System;
 using input;
 using physic;
 using Scrtwpns.Mixbox;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.WSA;
 using util;
 using Color = UnityEngine.Color;
 
@@ -32,9 +34,12 @@ namespace entity
 
         public float jumpStrength = 1000, tongueStrength = 1200, tongueMaxDistance;
 
-        private GameObject _tongue = null;
+        private Tongue _tongue = null;
 
         private Vector2 _lastJumpDirection = Vector2.zero;
+
+        private float _setObjectiveTime = 0;
+        private Color _baseColor = Color.white, _objectiveColor = Color.white;
 
         private void Awake()
         {
@@ -50,6 +55,8 @@ namespace entity
         private void Start()
         {
             PressManager.Instance.RegisterListener(this);
+            this._objectiveColor = this.GetColor();
+            this._baseColor = this.GetColor();
         }
 
         private void FixedUpdate()
@@ -70,6 +77,9 @@ namespace entity
 
         private void Update()
         {
+            float colorChangeProgress = Math.Max(0, Math.Min(1, (Time.time - this._setObjectiveTime) * 1 / 2));
+            this._spriteRenderer.color = Mixbox.Lerp(this._baseColor, this._objectiveColor, colorChangeProgress / 2F);
+            
             if (PressManager.Instance.IsHolding())
             {
                 this._aimValue += Time.unscaledDeltaTime ;
@@ -130,10 +140,12 @@ namespace entity
             {
                 if (!this._tongue)
                 {
-                    this._tongue = new GameObject("Tongue");
+                    GameObject tongue = new GameObject("Tongue");
                     //this._tongue.transform.SetParent(this.transform);
-                    this._tongue.AddComponent<Tongue>();
-                    this._tongue.GetComponent<Tongue>().Initialize(this, this.transform.TransformDirection(this._lastJumpDirection), this.tongueStrength, this.tongueMaxDistance);
+                    tongue.AddComponent<Tongue>();
+                    Tongue component = tongue.GetComponent<Tongue>();
+                    this._tongue = component;
+                    component.Initialize(this, this.transform.TransformDirection(this._lastJumpDirection), this.tongueStrength, this.tongueMaxDistance);
                     //Physics2D.IgnoreCollision(this._collider2D, this._tongue.GetComponent<Collider2D>(), true);
 
                 }
@@ -206,6 +218,13 @@ namespace entity
             return this._spriteRenderer.color;
         }
 
+        public void setObjectiveColor(Color color)
+        {
+            this._setObjectiveTime = Time.time;
+            this._baseColor = this.GetColor();
+            this._objectiveColor = color;
+        }
+        
         public void SimpleClick()
         {
             this.TryGrab(this._turnAngle, false);
@@ -236,7 +255,22 @@ namespace entity
         {
             return this._rigidBody;
         }
-        
+
+
+        public void OnCollisionEnter2D(Collision2D other)
+        {
+            if (this._tongue)
+            {
+                foreach (ContactPoint2D point in other.contacts)
+                {
+                    Grabbable grabbable = point.collider.gameObject.GetComponent<Grabbable>();
+                    if (grabbable)
+                    {
+                        this._tongue.PlayerCollideWith(grabbable);
+                    }
+                }
+            }
+        }
     }
     
     

@@ -57,6 +57,7 @@
     <Compile Include="Assets\Scripts\Entity\Tongue.cs" />
     <Compile Include="Assets\Scripts\Input\IInputListener.cs" />
     <Compile Include="Assets\Scripts\Input\PressManager.cs" />
+    <Compile Include="Assets\Scripts\Entity\Grabbable.cs" />
     <Compile Include="Assets\Scripts\Entity\DirectionPivot.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity 2022.3.10f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
