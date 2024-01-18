@@ -79,7 +79,7 @@ namespace entity
         {
             float colorChangeProgress = Math.Max(0, Math.Min(1, (Time.time - this._setObjectiveTime) * 1 / 2));
             this._spriteRenderer.color = Mixbox.Lerp(this._baseColor, this._objectiveColor, colorChangeProgress / 2F);
-            
+            Debug.Log(colorChangeProgress / 2F);
             if (PressManager.Instance.IsHolding())
             {
                 this._aimValue += Time.unscaledDeltaTime ;
@@ -180,6 +180,11 @@ namespace entity
         public float GetAimAngle()
         {
             return this.IsAiming() ? (this._aimAngle) : (this._turnAngle);
+        }
+
+        public Attractor GetAttractor()
+        {
+            return this._attractor;
         }
 
         public Vector2 GetAimDirection()

@@ -24,7 +24,7 @@ namespace physic
             this._rigidBody = this.GetComponent<Rigidbody2D>();
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             this._rigidBody.gravityScale = 0;
             if (!this._rigidBody.isKinematic) 
@@ -49,6 +49,12 @@ namespace physic
         private void OnDisable()
         {
             Attractors.Remove(this);
+        }
+        
+        
+        public Attractor GetPlanet()
+        {
+            return this.planet;
         }
     
         void FixedUpdate()
