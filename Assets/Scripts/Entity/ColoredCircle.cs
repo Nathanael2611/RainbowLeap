@@ -1,11 +1,7 @@
-using System;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace entity
 {
-    [InitializeOnLoad]
     [RequireComponent(typeof(SpriteRenderer))]
     public class ColoredCircle : Grabbable
 

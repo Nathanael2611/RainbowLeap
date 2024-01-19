@@ -32,7 +32,6 @@ namespace entity
             //playerAttractor.DontAttract(this._attractor);
             this._scaleOnGrab = this.transform.localScale;
             Vector2 playerPos = player.GetRigidbody().position;
-            Debug.Log(this._rigidBody);
             Vector2 myPos = this._rigidBody.position;
             this._startDist = Vector2.Distance(playerPos, myPos);
             //this._rigidBody.constraints = RigidbodyConstraints2D.None;

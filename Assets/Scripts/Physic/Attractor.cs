@@ -24,7 +24,7 @@ namespace physic
             this._rigidBody = this.GetComponent<Rigidbody2D>();
         }
 
-        protected virtual void Start()
+        public virtual void Start()
         {
             this._rigidBody.gravityScale = 0;
             if (!this._rigidBody.isKinematic) 
@@ -59,7 +59,7 @@ namespace physic
     
         void FixedUpdate()
         {
-            if (planet)
+            if (this.planet)
             {
                 Vector3 targetDir = (this.transform.position - this.planet.transform.position).normalized;
                 Quaternion toAttain = Quaternion.FromToRotation(this.transform.up, targetDir) * this.transform.rotation;

@@ -2,10 +2,7 @@ using System;
 using input;
 using physic;
 using Scrtwpns.Mixbox;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TestTools;
-using UnityEngine.WSA;
 using util;
 using Color = UnityEngine.Color;
 
@@ -63,8 +60,11 @@ namespace entity
         {
             Bounds bounds = this._collider2D.bounds;
             Vector2 pos = this._rigidBody.position;
-        
-            RaycastHit2D[] hits = Physics2D.RaycastAll(pos, -(pos - this._attractor.planet.GetRigidBody().position).normalized, _collider2D.bounds.extents.y + 0.1f);
+
+
+            if (this._attractor.planet)
+            {
+                RaycastHit2D[] hits = Physics2D.RaycastAll(pos, -(pos - this._attractor.planet.GetRigidBody().position).normalized, _collider2D.bounds.extents.y + 0.1f);
             int i = 0;
             foreach (var hit2D in hits)
             {
@@ -72,14 +72,16 @@ namespace entity
                 i++;
             }
 
-            this._onGround = i > 0;
+                this._onGround = i > 0;
+            }
+        
+            
         }
 
         private void Update()
         {
             float colorChangeProgress = Math.Max(0, Math.Min(1, (Time.time - this._setObjectiveTime) * 1 / 2));
             this._spriteRenderer.color = Mixbox.Lerp(this._baseColor, this._objectiveColor, colorChangeProgress / 2F);
-            Debug.Log(colorChangeProgress / 2F);
             if (PressManager.Instance.IsHolding())
             {
                 this._aimValue += Time.unscaledDeltaTime ;
@@ -134,8 +136,8 @@ namespace entity
             if (this._onGround)
             {
                 this._rigidBody.AddRelativeForce(this._aimDirection * this.jumpStrength);
-                this._lastJumpDirection = this._aimDirection;
             }
+            this._lastJumpDirection = this._aimDirection;
             if(forceTongue || !this._onGround)
             {
                 if (!this._tongue)
