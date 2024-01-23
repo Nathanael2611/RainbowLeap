@@ -45,6 +45,7 @@ namespace entity
             Attractor playerAttractor = player.GetComponent<Attractor>();
             this._attractor.DontAttract(playerAttractor);
             playerAttractor.DontAttract(this._attractor);
+            this._attractor.autoPlanet = false;
             
             this._renderer.material = Resources.Load<Material>("Materials/TongueMaterial") as Material;
 
@@ -69,6 +70,8 @@ namespace entity
         {
             if (!this._renderer)
                 return;
+            this._attractor.planet = this._player.GetAttractor().planet;
+            
 
             if (this._lockPoint != Vector2.zero)
             {

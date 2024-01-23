@@ -1,0 +1,34 @@
+using System.Collections;
+using System.Collections.Generic;
+using entity;
+using input;
+using UnityEngine;
+using UnityEngine.PlayerLoop;
+
+public class PlayerCamera : MonoBehaviour
+{
+
+    public Player playerToFollow;
+    private Camera _camera;
+
+    private float _zoomFactor = 1;
+    
+    void Start()
+    {
+        this._camera = this.GetComponent<Camera>();
+        if (this.playerToFollow)
+        {
+            this.transform.SetParent(this.playerToFollow.transform);
+        }
+    }
+
+    void Update()
+    {
+        if (this.playerToFollow.OnGround() || PressManager.Instance.IsHolding())
+        {
+            this._zoomFactor = Mathf.Min(1, Mathf.Max(0, this._zoomFactor + (PressManager.Instance.IsHolding() ? 1 : -1) * Time.unscaledDeltaTime));
+        }
+        this._camera.orthographicSize = 5 + 4 * this._zoomFactor;
+    }
+
+}

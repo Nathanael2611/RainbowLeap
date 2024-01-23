@@ -12,8 +12,8 @@ namespace input
         public float doubleClickTime = 0.3F;
 
         private List<IInputListener> _listeners = new();
-        private float _lastDown, _lastUp;
-        private bool _clickPending = false, _wasHolding;
+        private float _lastDown = -9, _lastUp = -10;
+        private bool _clickPending = false, _wasHolding = false;
 
         private void Awake()
         {
@@ -23,7 +23,6 @@ namespace input
         private void Update()
         {
             Instance = this;
-
 
             if (Input.GetKeyDown(this.keyToUse))
             {

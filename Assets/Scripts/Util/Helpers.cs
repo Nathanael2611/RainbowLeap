@@ -5,6 +5,18 @@ namespace util
 {
     public static class Helpers
     {
+
+        public static Color ColorFromHex(string hex)
+        {
+            Color color = Color.white;
+            ColorUtility.TryParseHtmlString(hex, out color);
+            return color;
+        }
+        
+        public static Vector3 Vec2ToVec3(Vector2 vector2)
+        {
+            return new Vector3(vector2.x, vector2.y, 0);
+        }
         public static Vector2 Rotate(Vector2 vec, float rotation)
         {
             var f = Mathf.Cos(rotation);

@@ -78,6 +78,19 @@ namespace entity
             
         }
 
+        public float GetSimilitude()
+        {
+            Planet planet = (Planet) this._attractor.planet;
+            Color a = planet.GetPlanetColor();
+            Color b = this._objectiveColor;
+
+            Vector3 labA = Helpers.ConvertRGBToLab(a);
+            Vector3 labB = Helpers.ConvertRGBToLab(b);
+
+            var deltaE = Helpers.CompareLabs(labA, labB);
+            return 100 - deltaE;
+        }
+
         private void Update()
         {
             float colorChangeProgress = Math.Max(0, Math.Min(1, (Time.time - this._setObjectiveTime) * 1 / 2));
@@ -94,6 +107,7 @@ namespace entity
             //this._aimAngle = 
             if (this.IsAiming())
             {
+                this._rigidBody.velocity = new Vector2(0, 0);
                 this._aimAngle = (Mathf.Sin(this._aimValue) * (70 * this._aimFactor));
             }
             else
@@ -133,7 +147,7 @@ namespace entity
                 }
             }
 
-            if (this._onGround)
+            if (this._onGround && !forceTongue)
             {
                 this._rigidBody.AddRelativeForce(this._aimDirection * this.jumpStrength);
             }

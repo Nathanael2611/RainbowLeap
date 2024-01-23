@@ -15,6 +15,7 @@ namespace physic
         public Vector2 startVelocity;
         public Attractor planet = null;
         public bool autoPlanet = true;
+        public bool onlyAttractWhenPlanet = false; 
 
         // These objects will not be attracted
         private List<Attractor> _dontAttract = new();
@@ -69,7 +70,7 @@ namespace physic
             float mostAttraction = 0F;
             foreach (Attractor attractor in Attractors)
             {
-                if (attractor != this)
+                if (attractor != this && (!this.onlyAttractWhenPlanet || attractor.planet == this))
                     this.Attract(attractor);
                 if (attractor.DoAttract(this) && this.autoPlanet)
                 {

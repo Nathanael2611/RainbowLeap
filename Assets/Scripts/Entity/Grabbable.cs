@@ -8,18 +8,19 @@ namespace entity
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Attractor))]
+    [RequireComponent(typeof(CircleCollider2D))]
     public abstract class Grabbable : MonoBehaviour
     {
 
-        private Rigidbody2D _rigidBody;
+        protected Rigidbody2D RigidBody;
         private Attractor _attractor;
 
         private Vector3 _scaleOnGrab;
         private float _startDist = 0;
 
-        private void Start()
+        public virtual void Start()
         {
-            this._rigidBody = this.GetComponent<Rigidbody2D>();
+            this.RigidBody = this.GetComponent<Rigidbody2D>();
             this._attractor = this.GetComponent<Attractor>();
     
         }
@@ -32,14 +33,14 @@ namespace entity
             //playerAttractor.DontAttract(this._attractor);
             this._scaleOnGrab = this.transform.localScale;
             Vector2 playerPos = player.GetRigidbody().position;
-            Vector2 myPos = this._rigidBody.position;
+            Vector2 myPos = this.RigidBody.position;
             this._startDist = Vector2.Distance(playerPos, myPos);
             //this._rigidBody.constraints = RigidbodyConstraints2D.None;
         }
 
         public void GrabUpdate(Player player)
         {
-            float distance = Mathf.Max(0, Mathf.Min(Vector2.Distance(player.GetRigidbody().position, this._rigidBody.position), this._startDist));
+            float distance = Mathf.Max(0, Mathf.Min(Vector2.Distance(player.GetRigidbody().position, this.RigidBody.position), this._startDist));
             //this._rigidBody.velocity = ( this._rigidBody.position - player.GetRigidbody().position).normalized * (3 * Time.deltaTime);
             float progress = 1 - Mathf.Max(0, Mathf.Min(distance * 1 / this._startDist, 1));
             Vector2 vec2Scale = Vector2.Lerp(this._scaleOnGrab, this.GrabScaleFactor(), progress);

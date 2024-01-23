@@ -10,15 +10,15 @@ using util;
 public class ColorInfo : MonoBehaviour
 {
 
-    private Image _playerColor;
-    private Image _planetColor;
+    //private Image _playerColor;
+    //private Image _planetColor;
     private TextMeshProUGUI _textMeshPro;
     
     void Start()
     {
-        this._playerColor = this.GetComponent<Image>();
-        this._planetColor = this.transform.GetChild(1).GetComponent<Image>();
-        this._textMeshPro = this.GetComponentInChildren<TextMeshProUGUI>();
+        //this._playerColor = this.GetComponent<Image>();
+        //this._planetColor = this.transform.GetChild(1).GetComponent<Image>();
+        this._textMeshPro = this.GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -32,17 +32,17 @@ public class ColorInfo : MonoBehaviour
             if (planetAttractor.GetType() == typeof(Planet))
             {
                 Planet planet = (Planet) planetAttractor;
-                this._planetColor.color = planet.GetPlanetColor();
-                this._playerColor.color = player.GetColor();
-                Color a = planet.GetPlanetColor();
-                Color b = Player.ThePlayer.GetColor();
+                Vector2 direction = -(planet.GetRigidBody().position - player.GetRigidbody().position).normalized;
+                Transform planetTransform = planet.transform;
+                this._textMeshPro.rectTransform.localScale = new Vector3(6f * 0.005F, 6f * 0.005F, 6f * 0.005F);
+                float s = (planetTransform.localScale.y * planet.GetCircleCollide().radius) - this._textMeshPro.rectTransform.localScale.y * this._textMeshPro.rectTransform.rect.height;
 
-                Vector3 labA = Helpers.ConvertRGBToLab(a);
-                Vector3 labB = Helpers.ConvertRGBToLab(b);
-
-                var deltaE = Helpers.CompareLabs(labA, labB);
-                this._textMeshPro.SetText(Mathf.Floor(100 - deltaE) + "%");
-
+                this._textMeshPro.rectTransform.position = planetTransform.position + new Vector3(direction.x * s, direction.y * s);
+                this._textMeshPro.rectTransform.rotation = player.transform.rotation;
+                this._textMeshPro.SetText(Mathf.Floor(player.GetSimilitude()) + "%");
+                
+                //this._planetColor.color = planet.GetPlanetColor();
+                //this._playerColor.color = player.GetColor();
             }
         }
         //this._coloredImage = player.GetAttractor().planet ? player.GetAttractor().planet : Color.white;
