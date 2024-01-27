@@ -1,36 +1,44 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using entity;
 using UnityEngine;
 
-public class DirectionPivot : MonoBehaviour
+namespace Entity
 {
-
-    private Player _player;
-    private SpriteRenderer _sprite;
     
-    void Start()
-    {
-        Player player = this.transform.parent.GetComponent<Player>();
-        this._sprite = this.GetComponent<SpriteRenderer>();
-        if (player)
-            this._player = player;
-    }
-
-    // Update is called once per frame
-    void Update()
+    /**
+     * Ce component va diriger l'objet de flèche directionnelle lorsqu'il est nécessaire d'afficher la direction
+     * visée.
+     */
+    public class DirectionPivot : MonoBehaviour
     {
 
-        float scale = this._player.IsAiming() ? 1 : 0;
-        this.transform.localScale = new Vector3(scale, scale, scale);
-        if (this._player.IsAiming())
+        // Instance du joueur parent.
+        private Player _player;
+        // Instance du component SpriteRenderer utilisé.
+        private SpriteRenderer _sprite;
+    
+        /**
+         * Définition des valeurs ci-haut lors dès le début.
+         */
+        void Start()
         {
-            this.transform.localRotation = (Quaternion.Euler(0, 0, this._player.GetAimAngle()));
+            Player player = this.transform.parent.GetComponent<Player>();
+            this._sprite = this.GetComponent<SpriteRenderer>();
+            if (player)
+                this._player = player;
         }
-    }
+    
+        /**
+         * Mise à jour de l'orientation en fonction de la direction de visée du·de la joueur·se.
+         */
+        void Update()
+        {
+            float scale = this._player.IsAiming() ? 1 : 0;
+            this.transform.localScale = new Vector3(scale, scale, scale);
+            if (this._player.IsAiming())
+            {
+                this.transform.localRotation = (Quaternion.Euler(0, 0, this._player.GetAimAngle()));
+            }
+        }
 
-    private void LateUpdate()
-    {
     }
 }

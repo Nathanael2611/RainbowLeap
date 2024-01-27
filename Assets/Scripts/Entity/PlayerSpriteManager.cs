@@ -3,12 +3,20 @@ using UnityEngine;
 
 namespace entity
 {
+    /**
+     * Component annexe au Player pour gérer son sprite en fonction des situations.
+     */
     public class PlayerSpriteManager : MonoBehaviour
     {
         
+        /**
+         * Définition des sprites depuis l'éditeur.
+         */
         public Sprite jumpSprite, standingSprite, frontSprite;
 
+        // Instance du·de la joueur·se en question.
         private Player _player;
+        // Instance du SpriteRenderer du·de la joueur·se.
         private SpriteRenderer _spriteRenderer;
 
         private void Awake()
@@ -16,13 +24,10 @@ namespace entity
             this._player = this.GetComponent<Player>();
             this._spriteRenderer = this.GetComponent<SpriteRenderer>();
         }
-
-        void Start()
-        {
-            
-        }
-
-        // Update is called once per frame
+        
+        /**
+         * Définition du sprite en fonction des conditions ici bas.
+         */
         void Update()
         {
             float relVelX = this._player.transform.InverseTransformDirection(this._player.GetRigidbody().velocity).x;

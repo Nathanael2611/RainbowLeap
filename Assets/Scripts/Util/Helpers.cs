@@ -1,11 +1,21 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
+using ColorUtility = UnityEngine.ColorUtility;
 
 namespace util
 {
+    
+    /**
+     * Une classe tout ce qu'il y a de plus normal, qui contient des fonctions utile pour l'ensemble du jeu :D
+     */
     public static class Helpers
     {
 
+        /**
+         * Tentera de convertir un string représentant une couleur hexadécimale en Color unity.
+         * Si il ne réussi pas, il retourne une couleur blanche.
+         */
         public static Color ColorFromHex(string hex)
         {
             Color color = Color.white;
@@ -13,10 +23,23 @@ namespace util
             return color;
         }
         
+        /**
+         * Convertie un Vector2 en Vector3. C'est pratique à certains endroits pour éviter d'avoir à
+         * le faire manuellement à chaque fois.
+         * 
+         * <param name="vector2">Le vecteur a convertir</param>
+         */
         public static Vector3 Vec2ToVec3(Vector2 vector2)
         {
             return new Vector3(vector2.x, vector2.y, 0);
         }
+        
+        /**
+         * Permet de rotation un Vector2 autour du point 0 0
+         *
+         * <param name="vec">Le vecteur a rotationner</param>
+         * <param name="rotation">La rotation voulue exprimée en radians.</param>
+         */
         public static Vector2 Rotate(Vector2 vec, float rotation)
         {
             var f = Mathf.Cos(rotation);
@@ -26,6 +49,13 @@ namespace util
             return new Vector2(d0, d2);
         }
     
+        /**
+         * Va comparer deux couleurs exprimées en LAB
+         *
+         * https://en.wikipedia.org/wiki/CIELAB_color_space
+         *
+         * J'ai trouvé cette fonction sur StackOverflow, et je l'ai adaptée en C#
+         */
         public static float CompareLabs(Vector3 labA, Vector3 labB)
         {
             var deltaL = labA[0] - labB[0];
@@ -44,7 +74,19 @@ namespace util
             var i = deltaLKlsl * deltaLKlsl + deltaCkcsc * deltaCkcsc + deltaHkhsh * deltaHkhsh;
             return i < 0 ? 0 : Mathf.Sqrt((float)i); 
         }
+
+        public static Color WithMaxSaturation(Color color)
+        {
+            float h = 0, s = 0, v = 0;
+            Color.RGBToHSV(color, out h, out s, out v);
+            return Color.HSVToRGB(h, 1, v);
+        }
     
+        /**
+         * Convertis une couleur Unity en LAB
+         *
+         * J'ai trouvé la méthode encore une fois sur StackOverflow, et je l'ai adaptée C# pour Unity.
+         */
         public static Vector3 ConvertRGBToLab(Color color)
         {
             double red = color.r;

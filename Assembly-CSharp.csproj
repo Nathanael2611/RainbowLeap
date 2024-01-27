@@ -45,25 +45,26 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.10f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Planet.cs" />
-    <Compile Include="Assets\Scripts\UI\DirectionRenderer.cs" />
+    <Compile Include="Assets\Scripts\Util\Lab.cs" />
+    <Compile Include="Assets\Scripts\Entity\Player\Tongue.cs" />
+    <Compile Include="Assets\Scripts\Util\PlayerCamera.cs" />
+    <Compile Include="Assets\Scripts\Util\CEDES.cs" />
     <Compile Include="Assets\Scripts\UI\ColorInfo.cs" />
     <Compile Include="Assets\debugtest.cs" />
+    <Compile Include="Assets\Scripts\Entity\Planet.cs" />
+    <Compile Include="Assets\Scripts\Util\MapGenerator.cs" />
     <Compile Include="Assets\Scripts\Entity\ColoredCircle.cs" />
     <Compile Include="Assets\Scripts\Defs\Palette.cs" />
     <Compile Include="Assets\Scripts\Util\RotationLock.cs" />
-    <Compile Include="Assets\Scripts\Entity\Player.cs" />
     <Compile Include="Assets\Scripts\Physic\Attractor.cs" />
+    <Compile Include="Assets\Scripts\Entity\Player\PlayerAttractor.cs" />
+    <Compile Include="Assets\Scripts\Entity\Player\Player.cs" />
     <Compile Include="Assets\Scripts\Entity\PlayerSpriteManager.cs" />
     <Compile Include="Assets\Scripts\Util\Caches\ResourceCache.cs" />
     <Compile Include="Assets\Scripts\Util\Helpers.cs" />
-    <Compile Include="Assets\Scripts\Entity\Tongue.cs" />
     <Compile Include="Assets\Scripts\Util\PlanetGenerator.cs" />
     <Compile Include="Assets\Scripts\Input\IInputListener.cs" />
     <Compile Include="Assets\Scripts\Input\PressManager.cs" />
-    <Compile Include="Assets\Scripts\Util\ShapeRenderer.cs" />
-    <Compile Include="Assets\Scripts\PlayerCamera.cs" />
-    <Compile Include="Assets\MapGenerator.cs" />
     <Compile Include="Assets\Backgrounds.cs" />
     <Compile Include="Assets\Scripts\Util\Caches\Caches.cs" />
     <Compile Include="Assets\Scripts\Entity\Grabbable.cs" />

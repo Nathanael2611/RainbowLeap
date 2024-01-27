@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Defs;
 using entity;
@@ -8,8 +7,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using util;
+using Util;
+using Util.Caches;
 using Random = Unity.Mathematics.Random;
-using Update = UnityEngine.PlayerLoop.Update;
 
 //[ExecuteInEditMode]
 [RequireComponent(typeof(CircleCollider2D))]
@@ -17,28 +17,34 @@ using Update = UnityEngine.PlayerLoop.Update;
 public class Planet : Attractor
 {
 
+    // Chemin d'accès vers le sprite de la planète.
     public static String planetSprite = "Debug/Circle";
-    
-    private SpriteRenderer _spriteRenderer;
 
+    /**
+     * Quelques components justes et nécessaires.
+     */
     private CircleCollider2D _circleCollider2D;
+    private SpriteRenderer _spriteRenderer;
     private Light2D _light;
 
+    // Seed utilisée pour sa génération.
     private uint _seed;
 
+    // Taille
     private float _size;
 
+    // La palette de la planète.
     public Palette Palette;
 
+    // La liste des collectibles qui orbitent autour de la planète.
     public List<Grabbable> grabbables = new();
-    //private MeshRenderer _meshRenderer;
-    //private ShapeRenderer _shapeRenderer;
 
-    //public Color planetColor;
-    //private ShapeRenderer _shapeRenderer;
-    //private MeshRenderer _meshRenderer;
-    //private CircleCollider2D _collider;
+    private MapGenerator _mapGenerator;
+    private Random _circleRandom;
 
+    /**
+     * Initialisation des variables au début
+     */
     public override void Start()
      {
          this._spriteRenderer = this.GetComponent<SpriteRenderer>();
@@ -46,40 +52,40 @@ public class Planet : Attractor
          this.autoPlanet = false;
          this.GetRigidBody().constraints = RigidbodyConstraints2D.FreezeAll;
          this.onlyAttractWhenPlanet = true;
-
          this._light = this.AddComponent<Light2D>();
-         
-         //this._meshRenderer = this.AddComponent<MeshRenderer>();
-         //this.AddComponent<MeshFilter>();
-         //this._shapeRenderer = this.AddComponent<ShapeRenderer>();
-
-         //this._shapeRenderer = this.GetComponent<ShapeRenderer>();
-
-         //this._meshRenderer = this.GetComponent<MeshRenderer>();
-         //this._collider = this.GetComponent<CircleCollider2D>();
      }
 
+    /**
+     * Permet de récupérer le collider de la planète.
+     */
     public CircleCollider2D GetCircleCollide()
     {
         return this._circleCollider2D;
     }
 
 
+    /**
+     * A chaque frame, définir les options de la lumière.
+     */
     private void Update()
     {
-        //this._meshRenderer.material.color = this.planetColor;
-        //this._collider.radius = this._shapeRenderer.polygonRadius;
-        //this._spriteRenderer.color = this.planetColor;
         this._light.color = this.GetPlanetColor();
         this._light.pointLightInnerRadius = this._size / 2F;
         this._light.pointLightOuterRadius = this._light.pointLightInnerRadius + 2;
     }
 
+    /**
+     * Récupère la couleur de la planète.
+     */
     public Color GetPlanetColor()
     {
         return this._spriteRenderer.color;
     }
 
+    /**
+     * Définit la palette de la planète.
+     * Ca me sera utile quand les planètes changeront de couleur, mais ça n'est pas encore codé;
+     */
     public void SetPalette(Palette palette)
     {
         this.Palette = palette;
@@ -87,57 +93,70 @@ public class Planet : Attractor
         this._spriteRenderer.color = palette.destination;
     }
 
-    
+    /**
+     * Génère une planète avec une seed.
+     * <param name="seed">La seed de la planète</param>
+     * <param name="generator">Le générateur parent.</param>
+     */
     public static Planet Create(uint seed, PlanetGenerator generator)
     {
         Random random = new Random(seed);
-
         GameObject planetObj = new GameObject();
         SpriteRenderer spriteRenderer = planetObj.AddComponent<SpriteRenderer>();
         Rigidbody2D rigidbody2D = planetObj.AddComponent<Rigidbody2D>();
         planetObj.AddComponent<Planet>();
-
         Planet planet = planetObj.GetComponent<Planet>();
         planet._size = random.NextFloat(5, 20);
         planet._seed = seed;
-        spriteRenderer.sprite = Caches.SpriteCache.Get(Planet.planetSprite);
+        spriteRenderer.sprite = Caches.SpriteCache.Get(planetSprite);
         planetObj.transform.localScale = new Vector3(planet._size, planet._size, 1);
-        //spriteRenderer.color = Color.HSVToRGB(random.NextFloat(0, 1), random.NextFloat(0.5f, 1), random.NextFloat(0.5F, 1));
-        planet.Palette = Defs.Palette.RandomPalette(random);
+        planet.Palette = Palette.RandomPalette(random);
         spriteRenderer.color = planet.Palette.destination;
         rigidbody2D.mass = planet._size * 25F;
-        
         planetObj.transform.SetParent(generator.transform);
         planetObj.transform.position = generator.transform.position;
-
-
-        
-
-        
         return planet;
     }
 
+    /**
+     * Génères les cercles colorés qui doivent orbiter autour de la planète.
+     */
     public void GenerateCircles(MapGenerator mapGenerator)
     {
-        Random random = new Random(this._seed);
+        this._circleRandom = new Random(this._seed);
+        this._mapGenerator = mapGenerator;
         for (int i = 0; i < 1 * this._size; i++)
         {
-            ColoredCircle circle = ColoredCircle.Create(this, (uint)(this._seed + i * this._size));
+            this.GenerateCircle();
+        }
+    }
+
+    public void GenerateCircle()
+    {
+        ColoredCircle circle = ColoredCircle.Create(this, (uint)(_circleRandom.NextInt()));
             
+            circle.GetSpriteRenderer().color = this._circleRandom.NextBool() ? this.Palette.RandomWay(this._circleRandom) : Palette.RanomWayInRandomPalette(this._circleRandom);
+            // Ce morceau de code permet de vérifier qu'on ne fasse pas spawn un cercle dans un autre.
+            // ON teste 10 fois max des positions, pour en trouver une qui n'entre en collision avec rien.
             for (int security = 0; security < 10; security++)
             {
-                float rot = random.NextFloat(0, 365) * Mathf.Deg2Rad;
+                float rot = this._circleRandom.NextFloat(0, 365) * Mathf.Deg2Rad;
                 Vector2 pos = Helpers.Rotate(
-                    new Vector3(0, random.NextFloat(this._size, this._size + 5), 0), rot);
+                    new Vector3(0, this._circleRandom.NextFloat(this._size / 2 + 1, this._size + 5), 0),
+                    rot);
                 
                 circle.transform.position = this.transform.position + Helpers.Vec2ToVec3(pos);
+                float scale = this._circleRandom.NextFloat(0.6F, 2);
+                circle.transform.localScale = new Vector3(scale, scale, scale);
 
                 bool collide = false;
-                foreach (Planet mapGeneratorPlanet in mapGenerator.planets)
+                foreach (Planet mapGeneratorPlanet in this._mapGenerator.planets)
                 {
                     foreach (Grabbable grabbable in mapGeneratorPlanet.grabbables)
                     {
-                        if (Vector2.Distance(grabbable.transform.position, circle.transform.position) <
+                        // Check de radius au lieu de faire avec l'engin physique, ça revient au même puisqu'on travaille
+                        // avec des cercles.
+                        if (grabbable != null &&Vector2.Distance(grabbable.transform.position, circle.transform.position) <
                             circle.transform.localScale.y + grabbable.transform.localScale.y + 1)
                         {
                             collide = true;
@@ -155,14 +174,19 @@ public class Planet : Attractor
                     break;
                 }
 
+                // Si au bout de la dixième fois, on n'a toujours pas réussi (le break en haut permet de s'en assurer)
+                // Bah on dépop l'objet
                 if (security == 9)
-                    GameObject.Destroy(circle.gameObject);
+                    Destroy(circle.gameObject);
             }
             
+            // Ajoute le cercle à la liste des collectibles présents.
             this.grabbables.Add(circle);
-        }
     }
 
+    /**
+     * Récupère la taille de la planète.
+     */
     public float GetSize()
     {
         return this._size;

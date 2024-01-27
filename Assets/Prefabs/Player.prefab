@@ -97,10 +97,10 @@ GameObject:
   - component: {fileID: 3907802193703170347}
   - component: {fileID: 8453793680457593243}
   - component: {fileID: 2027132830992058903}
-  - component: {fileID: 3837021743129651431}
   - component: {fileID: 4077589977244624781}
   - component: {fileID: 4474387332670133990}
   - component: {fileID: 1424916662679480413}
+  - component: {fileID: 8099286850203592351}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -227,6 +227,7 @@ MonoBehaviour:
   jumpStrength: 1000
   tongueStrength: 1000
   tongueMaxDistance: 10
+  objectiveColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!50 &2027132830992058903
 Rigidbody2D:
   serializedVersion: 4
@@ -254,22 +255,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &3837021743129651431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3971635176459762088}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38700f725db6fea47995fb6addbc680a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startVelocity: {x: 10, y: 0}
-  planet: {fileID: 0}
-  autoPlanet: 1
-  onlyAttractWhenPlanet: 0
 --- !u!114 &4077589977244624781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,6 +335,23 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &8099286850203592351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3971635176459762088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab479e63464460a4e9ea2035d116825c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startVelocity: {x: 0, y: 0}
+  planet: {fileID: 0}
+  autoPlanet: 1
+  onlyAttractWhenPlanet: 0
+  player: {fileID: 0}
 --- !u!1 &4197148946365947514
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe1bcbff459fcf141a80514e24e0660e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerToFollow: {fileID: 8453793680457593243}
+  playerToFollow: {fileID: 0}
 --- !u!114 &3358590774074569340
 MonoBehaviour:
   m_ObjectHideFlags: 0

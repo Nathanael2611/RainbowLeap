@@ -2,27 +2,46 @@
 using physic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Util;
 
 namespace entity
 {
+    /**
+     * Component de la langue lancée par le·la joueur·se.
+     */
     public class Tongue : MonoBehaviour
     {
 
+        // Instance du·de la joueur·se auquel·à laquelle appartient la langue.
         private Player _player;
 
-        private LineRenderer _renderer = new();
+        /**
+         * Tout un tas de définitions de components utilisés.
+         */
+        private LineRenderer _renderer;
         private Rigidbody2D _rigidbody;
         private CircleCollider2D _collider2D;
         private Attractor _attractor;
 
+        /**
+         * Préalablement définies depuis les variables du·de la joueur·se, on retrouve ces variables ici
+         * aussi.
+         */
         public float tongueMaxDistance, tongueStrength;
 
+        // La langue a t-elle amorcé son retour vers le·la joueur·se?
         private bool _comeBack = false;
+        // Temps auquel la langue a été lancée.
         private float _launchTime = 0;
 
+        // Point absolu auquel la langue est attachée dans le monde.
         private Vector2 _lockPoint = Vector2.zero;
+        // Le collectible que la langue accroche actuellement.
         private Grabbable _grabbable;
 
+        /**
+         * Définition des components.
+         */
         private void Awake()
         {
             this._renderer = this.AddComponent<LineRenderer>();
@@ -35,6 +54,24 @@ namespace entity
             rotationLock.z = true;
         }
 
+        public void Comeback()
+        {
+            this._comeBack = true;
+            this._lockPoint = Vector2.zero;
+            if (this._grabbable)
+            {
+                this._grabbable.ResetScale();
+            }
+            this._grabbable = null;
+        }
+
+        /**
+         * Initialisation de la langue, et envoi de cette dernière.
+         * <param name="player">Le·la joueur·se qui lance la langue.</param>
+         * <param name="aimDirection">La direction absolue dans laquelle lancer la langue.</param>
+         * <param name="tongueStrength">La puissance de lancement de la langue.</param>
+         * <param name="tongueMaxDistance">La distance que peut parcourir la langue avant d'être forcée au retour.</param>
+         */
         public void Initialize(Player player, Vector2 aimDirection, float tongueStrength, float tongueMaxDistance)
         {
             this.tongueStrength = tongueStrength;
@@ -66,6 +103,16 @@ namespace entity
 
         }
 
+        /**
+         * A chaque frame, on va mettre à jour des éléments, et dessiner la langue via le LineRenderer
+         * On dessine une ligne rouge entre la position du joueur·se·s et celle de la langue afin de
+         * les relier.
+         *
+         * On en profite aussi pour vérifier les distances, amorcer le retour si nécessaire, et quelques
+         * autres trucs utiles.
+         *
+         * Si la langue est revenue au·à la joueur·se, alors on la détruit.
+         */
         private void Update()
         {
             if (!this._renderer)
@@ -114,7 +161,13 @@ namespace entity
                     GameObject.Destroy(this.gameObject);
             }
         }
-
+        
+        /**
+         * Appelé lorsqu'un joueur rentre en collision avec un collectible, on passe par la langue.
+         *
+         * En gros, on vérifie si le collectible est celui que la langue a attrapé, et si c'est le cas,
+         * alors on demande au collectible de se faire récupérer par le·la joueur·se.
+         */
         public void PlayerCollideWith(Grabbable grabbable)
         {
             if (this._grabbable == grabbable)
@@ -123,6 +176,11 @@ namespace entity
             }
         }
 
+        /**
+         * Lors d'un impact, on accroche la langue au point d'impact.
+         *
+         * Si le point touché est un collectible, alors on le définit comme tel.
+         */
         private void OnCollisionEnter2D(Collision2D other)
         {
             ContactPoint2D contactPoint2D = other.contacts[0];
@@ -134,7 +192,6 @@ namespace entity
                 this._grabbable = grabbable;
                 this._grabbable.TongueGrab(this, this._player);
             }
-
         }
     }
     
