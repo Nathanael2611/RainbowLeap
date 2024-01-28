@@ -102,25 +102,11 @@ namespace entity
 
         /**
          * Retourne la similitude entre la couleur du·de la joueur·se et la planète.
-         * TODO: Améliorer l'algorithme pour le jeu. Ptet en trouver un autre, ou capper la saturation des couleurs... A voir.
          */
         public float GetSimilitude()
         {
             Planet planet = (Planet) this._attractor.planet;
-            //lor a = Helpers.WithMaxSaturation(planet.GetPlanetColor());
-            //Color b = Helpers.WithMaxSaturation(this.objectiveColor);
-
-            //Vector3 labA = Helpers.ConvertRGBToLab(a);
-            //Vector3 labB = Helpers.ConvertRGBToLab(b);
-
-            //var deltaE = Helpers.CompareLabs(labA, labB);
-            //return 100 - deltaE;
-
-            //Lab labA = CEDES.RGBtoLab(planet.GetPlanetColor());
-            //Lab labB = CEDES.RGBtoLab(this.objectiveColor);
-            //return 100 - (float)CEDES.CIEDE2000(labA, labB);
-
-            return (float)(100 - CEDES.CalculateDeltaE(planet.GetPlanetColor(), this._spriteRenderer.color));
+            return (float)Mathf.Max(0, Mathf.Min(100f, 120f - (float) CEDES.CalculateDeltaE(planet.GetPlanetColor(), this._spriteRenderer.color)));
         }
 
         /**
@@ -254,7 +240,14 @@ namespace entity
         {
             // Ici, ForceTongue est à false, pour lui demander de ne pas lancer la langue.
             // Ce qui revient à faire un saut.
-            this.TryGrab(this._turnAngle, false);
+            if (this._tongue)
+            {
+                this._tongue.Comeback();
+            }
+            else
+            {
+                this.TryGrab(this._turnAngle, false);
+            }
         }
 
         /**

@@ -157,7 +157,6 @@ namespace input
          */
         public bool IsHolding()
         {
-            Debug.Log(GetHoldTime());
             return GetHoldTime() > 0;
         }
 

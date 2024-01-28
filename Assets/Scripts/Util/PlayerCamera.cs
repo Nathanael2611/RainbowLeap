@@ -28,7 +28,7 @@ public class PlayerCamera : MonoBehaviour
         {
             this._zoomFactor = Mathf.Min(1, Mathf.Max(0, this._zoomFactor + (PressManager.Instance.IsHolding() ? 1 : -1) * Time.unscaledDeltaTime));
         }
-        this._camera.orthographicSize = 6 + 4 * this._zoomFactor;
+        this._camera.orthographicSize = 5.5F + 4 * this._zoomFactor;
     }
 
 }

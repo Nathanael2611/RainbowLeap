@@ -154,7 +154,7 @@ namespace entity
                 }
                 else
                 {
-                    this._player.GetRigidbody().velocity = (-(this._player.GetRigidbody().position - this._rigidbody.position).normalized * 10);
+                    this._player.GetRigidbody().velocity = (-(this._player.GetRigidbody().position - this._rigidbody.position).normalized * 6.5F);
                 }
 
                 if(distance < 1 && !_grabbable)

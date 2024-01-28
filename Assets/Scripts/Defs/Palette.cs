@@ -55,7 +55,12 @@ namespace Defs
          */
         public static Palette RandomPalette(Random random)
         {
-            return palettes[random.NextInt(palettes.Count)];
+            return palettes[random.NextInt(0, palettes.Count)];
+        }
+
+        public static Palette RandomPalette()
+        {
+            return palettes[UnityEngine.Random.Range(0, palettes.Count)];
         }
 
         public static Color RanomWayInRandomPalette(Random random)
@@ -69,7 +74,12 @@ namespace Defs
          */
         public Color RandomWay(Random random)
         {
-            return this.ways[random.NextInt(this.ways.Count)];
+            return this.ways[random.NextInt(0, this.ways.Count)];
+        }
+        
+        public Color RandomWay()
+        {
+            return this.ways[UnityEngine.Random.Range(0, this.ways.Count)];
         }
 
         /**

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Defs;
 using entity;
+using Entity;
 using physic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -32,6 +33,9 @@ public class Planet : Attractor
 
     // Taille
     private float _size;
+    
+    // Random
+    private Random _random;
 
     // La palette de la planète.
     public Palette Palette;
@@ -41,6 +45,9 @@ public class Planet : Attractor
 
     private MapGenerator _mapGenerator;
     private Random _circleRandom;
+
+    // True si lea joueur·se·s est en collision avec la planète. 
+    private bool _collideWithPlayer;
 
     /**
      * Initialisation des variables au début
@@ -72,6 +79,33 @@ public class Planet : Attractor
         this._light.color = this.GetPlanetColor();
         this._light.pointLightInnerRadius = this._size / 2F;
         this._light.pointLightOuterRadius = this._light.pointLightInnerRadius + 2;
+
+        if (this._collideWithPlayer && Player.ThePlayer.GetSimilitude() >= 99)
+        {
+            ColoredShockwave shockwave = ColoredShockwave.Create();
+            shockwave.ShockWave(this.transform.position, this._size, this._spriteRenderer.color);
+            for (int i = 0; i < 10; i++)
+            {
+                Palette randomPalette = Palette.RandomPalette(); 
+                if (randomPalette != this.Palette)
+                {
+                    this.SetPalette(randomPalette);
+            
+                    int o = 0;
+                    foreach (Grabbable grabbable in this.grabbables)
+                    {
+                        o++;
+                        if (grabbable.GetType() == typeof(ColoredCircle) && this._random.NextBool())
+                        {
+                            ColoredCircle circle = grabbable as ColoredCircle;
+                            circle.GetSpriteRenderer().color = randomPalette.RandomWay();
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -89,7 +123,6 @@ public class Planet : Attractor
     public void SetPalette(Palette palette)
     {
         this.Palette = palette;
-        Debug.Log(palette.destination);
         this._spriteRenderer.color = palette.destination;
     }
 
@@ -100,17 +133,17 @@ public class Planet : Attractor
      */
     public static Planet Create(uint seed, PlanetGenerator generator)
     {
-        Random random = new Random(seed);
         GameObject planetObj = new GameObject();
         SpriteRenderer spriteRenderer = planetObj.AddComponent<SpriteRenderer>();
         Rigidbody2D rigidbody2D = planetObj.AddComponent<Rigidbody2D>();
         planetObj.AddComponent<Planet>();
         Planet planet = planetObj.GetComponent<Planet>();
-        planet._size = random.NextFloat(5, 20);
+        planet._random = new Random(seed);
+        planet._size = planet._random.NextFloat(5, 20);
         planet._seed = seed;
         spriteRenderer.sprite = Caches.SpriteCache.Get(planetSprite);
         planetObj.transform.localScale = new Vector3(planet._size, planet._size, 1);
-        planet.Palette = Palette.RandomPalette(random);
+        planet.Palette = Palette.RandomPalette(planet._random);
         spriteRenderer.color = planet.Palette.destination;
         rigidbody2D.mass = planet._size * 25F;
         planetObj.transform.SetParent(generator.transform);
@@ -190,5 +223,21 @@ public class Planet : Attractor
     public float GetSize()
     {
         return this._size;
+    }
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.rigidbody == Player.ThePlayer.GetRigidbody())
+        {
+            this._collideWithPlayer = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.rigidbody == Player.ThePlayer.GetRigidbody())
+        {
+            this._collideWithPlayer = false;
+        }
     }
 }
