@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Defs;
+using Entity.Player;
 using UnityEngine;
 using util;
 using Random = Unity.Mathematics.Random;
@@ -16,6 +18,23 @@ namespace Util
         public uint seed;
         // La liste des planètes déjà générées, accessible dans l'éditeur
         public List<Planet> planets = new();
+        public int planetCount = 6;
+        public int optimizationRange = 30;
+
+        public float lastVisibilityUpdate = -10F;
+        
+        private void FixedUpdate()
+        {
+            if (Time.time - this.lastVisibilityUpdate > 2.5F)
+            {
+                this.lastVisibilityUpdate = Time.time;
+                for (int i = 0; i < this.transform.childCount; i++)
+                {
+                    Transform child = this.transform.GetChild(i);
+                    child.gameObject.SetActive(Vector3.Distance(Frog.TheFrog.transform.position, child.position) < this.optimizationRange);
+                }
+            }
+        }
 
         /**
          * Dès le début, génères les planètes procéduralement.
@@ -30,7 +49,7 @@ namespace Util
             // Va stocker la dernière planète générée, utile dans le for ci dessous, pour les mettre à bonne distance
             // en fonction de leur radius.
             PlanetGenerator last = null;
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < this.planetCount; i++)
             {
                 PlanetGenerator generator = PlanetGenerator.Generator((uint)(this.seed + i * (this.seed / 2)));
                 generator.Generate();
@@ -62,7 +81,13 @@ namespace Util
                         }
 
                         if (!collide)
+                        {
+                            Vector3 pos = Vector3.Lerp(last.generatedPlanet.transform.position, generator.transform.position, 0.5F);
+                            GameObject propulsor =
+                                GameObject.Instantiate(Caches.Caches.PrefabCache.Get("Prefabs/PropulsorBase"), generator.transform, true);
+                            propulsor.transform.position = pos;
                             break;
+                        }
                         
                         // Si on n'a pas trouvé de position au bout de 10 essais, alors on supprime la planète, tant pis :(
                         if (security == 9)
@@ -72,6 +97,7 @@ namespace Util
                 }
 
                 last = generator;
+                generator.transform.SetParent(this.transform);
                 // ajout de la planète à la liste des planètes.
                 planets.Add(generator.generatedPlanet);
             }

@@ -1,16 +1,17 @@
 ﻿using physic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace entity
+namespace Entity.Player
 {
     public class PlayerAttractor : Attractor
     {
 
-        public Player player;
+        [FormerlySerializedAs("player")] public Frog frog;
 
         public override bool OnAttractedBy(Attractor attractor, ref Vector2 force)
         {
-            if (player.IsAiming())
+            if (frog.IsAiming())
                 return false;
             return base.OnAttractedBy(attractor, ref force);
         }

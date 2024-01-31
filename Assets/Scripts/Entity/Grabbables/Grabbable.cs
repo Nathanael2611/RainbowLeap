@@ -1,10 +1,8 @@
-﻿using System;
-using entity;
+﻿using Entity.Player;
 using physic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-namespace entity
+namespace Entity.Grabbables
 {
     /**
      * Une classe abstraite desquels les éléments pouvant être attrapés avec la longue du·de la joueur·se
@@ -36,6 +34,11 @@ namespace entity
             this._attractor = this.GetComponent<Attractor>();
         }
 
+        public Attractor GetAttractor()
+        {
+            return this._attractor;
+        }
+        
         public Vector3 GetScaleOnGrab()
         {
             return this._scaleOnGrab;
@@ -46,7 +49,7 @@ namespace entity
          * <param name="tongue">L'instance de la langue en question</param>
          * <param name="player">L'instance du·de la joueur·se à qui elle appartient.</param>
          */
-        public virtual void TongueGrab(Tongue tongue, Player player)
+        public virtual void TongueGrab(Tongue tongue, Frog player)
         {
             this._scaleOnGrab = this.transform.localScale;
             Vector2 playerPos = player.GetRigidbody().position;
@@ -61,7 +64,7 @@ namespace entity
          * en fonction de GetScaleFactor.
          * <param name="player">L'instance du·de la joueur·se qui attrape l'objet</param>
          */
-        public void GrabUpdate(Player player)
+        public void GrabUpdate(Frog player)
         {
             float distance = Mathf.Max(0, Mathf.Min(Vector2.Distance(player.GetRigidbody().position, this.RigidBody.position), this._startDist));
             float progress = 1 - Mathf.Max(0, Mathf.Min(distance * 1 / this._startDist, 1));
@@ -82,7 +85,7 @@ namespace entity
          * est attrapé par le·la joueur·se.
          * <param name="player">L'instance du·de la joueur·se qui l'attrape.</param>
          */
-        public abstract void PlayerGrab(Player player);
+        public abstract void PlayerGrab(Frog player);
         
     }
 }

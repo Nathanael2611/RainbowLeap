@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Defs;
 using entity;
 using Entity;
+using Entity.Grabbables;
+using Entity.Player;
 using physic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,6 +17,7 @@ using Random = Unity.Mathematics.Random;
 //[ExecuteInEditMode]
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(Light2D))]
 public class Planet : Attractor
 {
 
@@ -39,7 +42,7 @@ public class Planet : Attractor
 
     // La palette de la planète.
     public Palette Palette;
-
+    
     // La liste des collectibles qui orbitent autour de la planète.
     public List<Grabbable> grabbables = new();
 
@@ -48,6 +51,12 @@ public class Planet : Attractor
 
     // True si lea joueur·se·s est en collision avec la planète. 
     private bool _collideWithPlayer;
+
+    public override void Awake()
+    {
+        base.Awake();
+        this._light = this.GetComponent<Light2D>();
+    }
 
     /**
      * Initialisation des variables au début
@@ -59,7 +68,6 @@ public class Planet : Attractor
          this.autoPlanet = false;
          this.GetRigidBody().constraints = RigidbodyConstraints2D.FreezeAll;
          this.onlyAttractWhenPlanet = true;
-         this._light = this.AddComponent<Light2D>();
      }
 
     /**
@@ -80,9 +88,11 @@ public class Planet : Attractor
         this._light.pointLightInnerRadius = this._size / 2F;
         this._light.pointLightOuterRadius = this._light.pointLightInnerRadius + 2;
 
-        if (this._collideWithPlayer && Player.ThePlayer.GetSimilitude() >= 99)
+        if (this._collideWithPlayer && Frog.TheFrog.GetSimilitude() >= 99)
         {
             ColoredShockwave shockwave = ColoredShockwave.Create();
+            Frog.TheFrog.score = (int)(10 / ((this._size / 2)) * Frog.TheFrog.actions);
+            Frog.TheFrog.IncrementActions(5);
             shockwave.ShockWave(this.transform.position, this._size, this._spriteRenderer.color);
             for (int i = 0; i < 10; i++)
             {
@@ -130,13 +140,13 @@ public class Planet : Attractor
      * Génère une planète avec une seed.
      * <param name="seed">La seed de la planète</param>
      * <param name="generator">Le générateur parent.</param>
+     * <param name="planetBase">The base planet prefab</param>
      */
     public static Planet Create(uint seed, PlanetGenerator generator)
     {
-        GameObject planetObj = new GameObject();
-        SpriteRenderer spriteRenderer = planetObj.AddComponent<SpriteRenderer>();
-        Rigidbody2D rigidbody2D = planetObj.AddComponent<Rigidbody2D>();
-        planetObj.AddComponent<Planet>();
+        GameObject planetObj = GameObject.Instantiate(Caches.PrefabCache.Get("Prefabs/PlanetBase"));
+        SpriteRenderer spriteRenderer = planetObj.GetComponent<SpriteRenderer>();
+        Rigidbody2D rigidbody2D = planetObj.GetComponent<Rigidbody2D>();
         Planet planet = planetObj.GetComponent<Planet>();
         planet._random = new Random(seed);
         planet._size = planet._random.NextFloat(5, 20);
@@ -160,6 +170,7 @@ public class Planet : Attractor
         this._mapGenerator = mapGenerator;
         for (int i = 0; i < 1 * this._size; i++)
         {
+            
             this.GenerateCircle();
         }
     }
@@ -227,7 +238,7 @@ public class Planet : Attractor
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.rigidbody == Player.ThePlayer.GetRigidbody())
+        if (col.rigidbody == Frog.TheFrog.GetRigidbody())
         {
             this._collideWithPlayer = true;
         }
@@ -235,9 +246,10 @@ public class Planet : Attractor
 
     private void OnCollisionExit2D(Collision2D other)
     {
-        if (other.rigidbody == Player.ThePlayer.GetRigidbody())
+        if (other.rigidbody == Frog.TheFrog.GetRigidbody())
         {
             this._collideWithPlayer = false;
         }
     }
+    
 }

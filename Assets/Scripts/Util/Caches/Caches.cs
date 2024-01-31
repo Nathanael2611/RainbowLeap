@@ -10,7 +10,10 @@ namespace Util.Caches
     {
         
         // Le cache des Sprite.
-        public static ResourceCache<Sprite> SpriteCache = new ResourceCache<Sprite>();
+        public static readonly ResourceCache<Sprite> SpriteCache = new ResourceCache<Sprite>();
+        
+        // Le cache des Prefabs
+        public static ResourceCache<GameObject> PrefabCache = new ResourceCache<GameObject>();
 
     }
 }

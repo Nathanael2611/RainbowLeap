@@ -41,7 +41,7 @@ namespace physic
         /**
          * Définition du RigidBody dès le début.
          */
-        private void Awake()
+        public virtual void Awake()
         {
             this._rigidBody = this.GetComponent<Rigidbody2D>();
         }

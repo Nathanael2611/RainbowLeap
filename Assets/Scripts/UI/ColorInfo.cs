@@ -1,4 +1,5 @@
 using entity;
+using Entity.Player;
 using physic;
 using TMPro;
 using UnityEngine;
@@ -28,9 +29,11 @@ namespace UI
          */
         void Update()
         {
-            Player player = Player.ThePlayer;
+            Frog player = Frog.TheFrog;
+            if(!player || !this._textMeshPro)
+                return;
             Attractor playerAttractor = player.GetAttractor();
-            if (playerAttractor.planet)
+            if (playerAttractor.planet && playerAttractor.planet.isActiveAndEnabled)
             {
                 Attractor planetAttractor = playerAttractor.planet;
                 

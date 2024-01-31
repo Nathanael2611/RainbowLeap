@@ -1,10 +1,11 @@
 ﻿using System;
+using Entity.Grabbables;
 using physic;
 using Unity.VisualScripting;
 using UnityEngine;
 using Util;
 
-namespace entity
+namespace Entity.Player
 {
     /**
      * Component de la langue lancée par le·la joueur·se.
@@ -13,7 +14,7 @@ namespace entity
     {
 
         // Instance du·de la joueur·se auquel·à laquelle appartient la langue.
-        private Player _player;
+        private Frog _frog;
 
         /**
          * Tout un tas de définitions de components utilisés.
@@ -67,32 +68,32 @@ namespace entity
 
         /**
          * Initialisation de la langue, et envoi de cette dernière.
-         * <param name="player">Le·la joueur·se qui lance la langue.</param>
+         * <param name="frog">Le·la joueur·se qui lance la langue.</param>
          * <param name="aimDirection">La direction absolue dans laquelle lancer la langue.</param>
          * <param name="tongueStrength">La puissance de lancement de la langue.</param>
          * <param name="tongueMaxDistance">La distance que peut parcourir la langue avant d'être forcée au retour.</param>
          */
-        public void Initialize(Player player, Vector2 aimDirection, float tongueStrength, float tongueMaxDistance)
+        public void Initialize(Frog frog, Vector2 aimDirection, float tongueStrength, float tongueMaxDistance)
         {
             this.tongueStrength = tongueStrength;
             this.tongueMaxDistance = tongueMaxDistance;
             this._renderer.positionCount = 2;
             this._renderer.startWidth = 0.22F;
 
-            Attractor playerAttractor = player.GetComponent<Attractor>();
+            Attractor playerAttractor = frog.GetComponent<Attractor>();
             this._attractor.DontAttract(playerAttractor);
             playerAttractor.DontAttract(this._attractor);
             this._attractor.autoPlanet = false;
             
             this._renderer.material = Resources.Load<Material>("Materials/TongueMaterial") as Material;
 
-            this._player = player;
+            this._frog = frog;
 
-            this._renderer.sortingOrder = this._player.GetComponent<SpriteRenderer>().sortingOrder - 1;
+            this._renderer.sortingOrder = this._frog.GetComponent<SpriteRenderer>().sortingOrder - 1;
 
             
-            this.transform.position = this._player.transform.position + (new Vector3(aimDirection.x, aimDirection.y).normalized * 1);
-            Physics2D.IgnoreCollision(this._collider2D, player.GetComponent<Collider2D>(), true);
+            this.transform.position = this._frog.transform.position + (new Vector3(aimDirection.x, aimDirection.y).normalized * 1);
+            Physics2D.IgnoreCollision(this._collider2D, frog.GetComponent<Collider2D>(), true);
 
             this._collider2D.radius = 0.2f;
             this._rigidbody.mass = 1;
@@ -117,7 +118,7 @@ namespace entity
         {
             if (!this._renderer)
                 return;
-            this._attractor.planet = this._player.GetAttractor().planet;
+            this._attractor.planet = this._frog.GetAttractor().planet;
             
 
             if (this._lockPoint != Vector2.zero)
@@ -127,16 +128,16 @@ namespace entity
             Vector3[] positions = new Vector3[2];
             this._renderer.startColor =  Color.red;
             this._renderer.endColor =  Color.red;
-            positions[0] = this._player.transform.position;
+            positions[0] = this._frog.transform.position;
             positions[1] = this.transform.position;
             this._renderer.SetPositions(positions);
 
             if (this._grabbable)
             {
-                this._grabbable.GrabUpdate(this._player);
+                this._grabbable.GrabUpdate(this._frog);
             }
 
-            var distance = Vector3.Distance(this.transform.position, this._player.transform.position);
+            var distance = Vector3.Distance(this.transform.position, this._frog.transform.position);
             if (distance > this.tongueMaxDistance || Time.time - this._launchTime > 2 || this._lockPoint != Vector2.zero)
             {
                 this._comeBack = true;
@@ -149,12 +150,12 @@ namespace entity
                 this._rigidbody.velocity = Vector2.zero;
                 if (this._lockPoint == Vector2.zero)
                 {
-                    this.transform.position = Vector3.Lerp(this.transform.position, this._player.transform.position,
+                    this.transform.position = Vector3.Lerp(this.transform.position, this._frog.transform.position,
                         3F * Time.deltaTime);
                 }
                 else
                 {
-                    this._player.GetRigidbody().velocity = (-(this._player.GetRigidbody().position - this._rigidbody.position).normalized * 6.5F);
+                    this._frog.GetRigidbody().velocity = (-(this._frog.GetRigidbody().position - this._rigidbody.position).normalized * 6.5F);
                 }
 
                 if(distance < 1 && !_grabbable)
@@ -172,7 +173,7 @@ namespace entity
         {
             if (this._grabbable == grabbable)
             {
-                this._grabbable.PlayerGrab(this._player);
+                this._grabbable.PlayerGrab(this._frog);
             }
         }
 
@@ -190,7 +191,19 @@ namespace entity
             if (grabbable)
             {
                 this._grabbable = grabbable;
-                this._grabbable.TongueGrab(this, this._player);
+                this._grabbable.TongueGrab(this, this._frog);
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            GameObject hit = other.gameObject;
+            Grabbable grabbable = hit.GetComponent<Grabbable>();
+            if (grabbable)
+            {
+                this._lockPoint = grabbable.transform.position;
+                this._grabbable = grabbable;
+                this._grabbable.TongueGrab(this, this._frog);
             }
         }
     }

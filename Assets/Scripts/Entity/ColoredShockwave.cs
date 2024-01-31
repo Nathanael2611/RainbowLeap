@@ -1,14 +1,13 @@
 ﻿using System;
 using Unity.VisualScripting;
-using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Util.Caches;
 
 namespace Entity
 {
     public class ColoredShockwave : MonoBehaviour
     {
-        
         public static String planetSprite = "Debug/Circle";
 
         private SpriteRenderer _spriteRenderer;
@@ -16,11 +15,11 @@ namespace Entity
         private Vector3 scaleOnStart = Vector3.zero;
         private Color _color;
         private float _timeStart = -1;
-        
+
         private void Awake()
         {
             this._spriteRenderer = this.AddComponent<SpriteRenderer>();
-            this._spriteRenderer.sprite = Caches.SpriteCache.Get(ColoredShockwave.planetSprite);
+            this._spriteRenderer.sprite = Caches.SpriteCache.Get(planetSprite);
             this._spriteRenderer.sortingOrder = 300;
         }
 
@@ -31,7 +30,7 @@ namespace Entity
                 float progress = Mathf.Min(2, Time.time - this._timeStart) / 2;
                 if (progress >= 1)
                 {
-                    GameObject.Destroy(this.gameObject);
+                    Destroy(this.gameObject);
                 }
 
                 this._spriteRenderer.color = new Color(this._color.r, this._color.g, this._color.b, 1 - progress);
@@ -53,6 +52,5 @@ namespace Entity
             ColoredShockwave shockwave = wave.AddComponent<ColoredShockwave>();
             return shockwave;
         }
-        
     }
 }

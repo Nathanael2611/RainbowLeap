@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using entity;
+using Entity.Player;
 using input;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -8,7 +9,7 @@ using UnityEngine.PlayerLoop;
 public class PlayerCamera : MonoBehaviour
 {
 
-    public Player playerToFollow;
+    public Frog playerToFollow;
     private Camera _camera;
 
     private float _zoomFactor = 1;
@@ -24,6 +25,8 @@ public class PlayerCamera : MonoBehaviour
 
     void Update()
     {
+        if(!this.playerToFollow)
+            return;
         if (this.playerToFollow.OnGround() || PressManager.Instance.IsHolding())
         {
             this._zoomFactor = Mathf.Min(1, Mathf.Max(0, this._zoomFactor + (PressManager.Instance.IsHolding() ? 1 : -1) * Time.unscaledDeltaTime));

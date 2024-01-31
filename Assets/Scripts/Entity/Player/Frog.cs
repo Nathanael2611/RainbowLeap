@@ -1,4 +1,6 @@
 using System;
+using entity;
+using Entity.Grabbables;
 using input;
 using physic;
 using Scrtwpns.Mixbox;
@@ -7,7 +9,7 @@ using util;
 using Util;
 using Color = UnityEngine.Color;
 
-namespace entity
+namespace Entity.Player
 {
     /**
      * Component principal du·de la joueur·se.
@@ -16,11 +18,11 @@ namespace entity
     [RequireComponent( typeof(Rigidbody2D) )]
     [RequireComponent( typeof(PlayerAttractor) )]
     [RequireComponent( typeof(PlayerSpriteManager))]
-    public class Player : MonoBehaviour, IInputListener
+    public class Frog : MonoBehaviour, IInputListener
     {
     
         // Instance unique du·de la joueur·se.
-        public static Player ThePlayer;
+        public static Frog TheFrog;
         
         /**
          * De nombreuuuuuses instances de pleins de components contenus dans le GameObject du·de la joueur·se.
@@ -35,7 +37,11 @@ namespace entity
         private Vector2         _aimDirection;
         private bool            _onGround = false;
 
-        private float _turnValue, _lastJump;
+        public bool reverseJumpAndDirection = false;
+        // Le nombre d'actions qu'il reste au·à la joueur·se
+        public int actions = 10, score = 0, maxActions = 30;
+
+        private float _turnValue = 1, _lastJump;
 
         /**
          * jumpStrength, permet depuis l'éditeur de changer la puissance du saut de la grenouille.
@@ -59,14 +65,19 @@ namespace entity
          */
         private void Awake()
         {
-            Player.ThePlayer = this;
+            Frog.TheFrog = this;
             this._rigidBody = this.GetComponent<Rigidbody2D>();
             this._rigidBody.gravityScale = 0;
             this._spriteRenderer = this.GetComponent<SpriteRenderer>();
             this._collider2D = this.GetComponent<Collider2D>();
             this._attractor = this.GetComponent<PlayerAttractor>();
-            this._attractor.player = this;
+            this._attractor.frog = this;
             this._spriteManager = this.GetComponent<PlayerSpriteManager>();
+        }
+
+        public Tongue GetTongue()
+        {
+            return this._tongue;
         }
 
         /**
@@ -105,8 +116,13 @@ namespace entity
          */
         public float GetSimilitude()
         {
-            Planet planet = (Planet) this._attractor.planet;
-            return (float)Mathf.Max(0, Mathf.Min(100f, 120f - (float) CEDES.CalculateDeltaE(planet.GetPlanetColor(), this._spriteRenderer.color)));
+            if (this._attractor.planet && this._attractor.planet.isActiveAndEnabled)
+            {
+                Planet planet = (Planet) this._attractor.planet;
+                return (float)Mathf.Max(0, Mathf.Min(100f, 120f - (float) CEDES.CalculateDeltaE(planet.GetPlanetColor(), this._spriteRenderer.color)));
+            }
+
+            return 0F;
         }
 
         /**
@@ -121,8 +137,8 @@ namespace entity
                 this._aimValue += Time.unscaledDeltaTime ;
             }
             
-            if (Time.unscaledTime - this._lastJump > 1)
-                this._turnValue += Time.unscaledDeltaTime;
+            //if (Time.unscaledTime - this._lastJump > 1)
+                //this._turnValue += Time.unscaledDeltaTime;
 
             if (this.IsAiming())
             {
@@ -199,8 +215,9 @@ namespace entity
          */
         public float GetNonAimingAngle()
         {
-            float cos = Mathf.Cos(this._turnValue * 3F);
-            return (int) (cos < 0 ? Mathf.Floor(cos) : Mathf.Ceil(cos)) * 75;
+            //float cos = Mathf.Cos(this._turnValue * 3F);
+            //return (int) (cos < 0 ? Mathf.Floor(cos) : Mathf.Ceil(cos)) * 75;
+            return (int) (this._turnValue < 0 ? Mathf.Floor(this._turnValue) : Mathf.Ceil(this._turnValue)) * 75;
         }
         
         /**
@@ -233,10 +250,23 @@ namespace entity
             this.objectiveColor = color;
         }
         
+        
         /**
-         * Lors d'un clique simple, simplement sauter.
+         * Gère le double clique.
          */
-        public void SimpleClick()
+        public void DoubleClick()
+        {
+            if (!this.reverseJumpAndDirection)
+            {
+                this.ChangeDirectionClick();
+            }
+            else
+            {
+                this.JumpClick();
+            }
+        }
+
+        public void JumpClick()
         {
             // Ici, ForceTongue est à false, pour lui demander de ne pas lancer la langue.
             // Ce qui revient à faire un saut.
@@ -249,12 +279,32 @@ namespace entity
                 this.TryGrab(this._turnAngle, false);
             }
         }
-
+        
         /**
-         * Gère le double clique (pas encore implémenté)
+         * Lors d'un clique simple.
          */
-        public void DoubleClick()
+        public void SimpleClick()
         {
+            if (this.reverseJumpAndDirection)
+            {
+                this.ChangeDirectionClick();
+            }
+            else
+            {
+                this.JumpClick();
+            }
+        }
+
+        public void ChangeDirectionClick()
+        {
+            if (this._turnValue > 0)
+            {
+                this._turnValue = -1;
+            }
+            else
+            {
+                this._turnValue = 1;
+            }
         }
 
         /**
@@ -312,8 +362,29 @@ namespace entity
                 }
             }
         }
-        
-        
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (this._tongue)
+            {
+                Grabbable grabbable = other.gameObject.GetComponent<Grabbable>();
+                if (grabbable)
+                {
+                    this._tongue.PlayerCollideWith(grabbable);
+                }
+            }
+        }
+
+        public Collider2D GetCollider()
+        {
+            return this._collider2D;
+        }
+
+
+        public void IncrementActions(int i)
+        {
+            this.actions = Math.Min(this.maxActions, Math.Max(this.actions + i, 0));
+        }
     }
     
 }

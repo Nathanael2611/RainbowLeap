@@ -26,7 +26,7 @@ namespace Defs
         {
             Palette.palettes.Clear();
             Palette.palettes.Add(Palette.Create(Mixbox.Lerp(Helpers.ColorFromHex("#F4D003"), Helpers.ColorFromHex("#0157FB"), 0.5F)).AddWay(Helpers.ColorFromHex("#F4D003")).AddWay(Helpers.ColorFromHex("#0157FB")).Build());
-            Palette.palettes.Add(Palette.Create(new Color(255/255F, 0, 204/255F)).AddWay(Color.red).AddWay(Color.white).Build());
+            Palette.palettes.Add(Palette.Create("#D4479B").AddWay(Color.red).AddWay(Color.white).Build());
             Palette.palettes.Add(Palette.Create("#7F3C9D").AddWay("#0287CA").AddWay(Color.red).Build());
             Palette.palettes.Add(Palette.Create("#FB611B").AddWay("#ED2851").AddWay("#FFCE18").Build());
             Palette.palettes.Add(Palette.Create(Color.grey).AddWay(Color.black).AddWay(Color.white).Build());

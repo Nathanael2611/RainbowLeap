@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using entity;
+using Entity.Player;
 using UnityEngine;
 
 public class Backgrounds : MonoBehaviour
@@ -13,14 +10,17 @@ public class Backgrounds : MonoBehaviour
     
     void Start()
     {
-        this.centerTile = GameObject.Instantiate(this.tileBase);
+        this.centerTile = Instantiate(this.tileBase);
+        this.centerTile.transform.SetParent(this.transform);
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        Player thePlayer = Player.ThePlayer;
+        Frog thePlayer = Frog.TheFrog;
+        if(!thePlayer)
+            return;
         Vector2 position = thePlayer.GetRigidbody().position;
         float tileX = Mathf.Floor((position.x + 25) / 50) * 50;
         float tileY = Mathf.Floor((position.y + 25) / 50) * 50;

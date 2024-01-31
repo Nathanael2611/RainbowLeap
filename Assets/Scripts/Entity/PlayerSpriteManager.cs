@@ -1,4 +1,5 @@
 using System;
+using Entity.Player;
 using UnityEngine;
 
 namespace entity
@@ -15,13 +16,13 @@ namespace entity
         public Sprite jumpSprite, standingSprite, frontSprite;
 
         // Instance du·de la joueur·se en question.
-        private Player _player;
+        private Frog _player;
         // Instance du SpriteRenderer du·de la joueur·se.
         private SpriteRenderer _spriteRenderer;
 
         private void Awake()
         {
-            this._player = this.GetComponent<Player>();
+            this._player = this.GetComponent<Frog>();
             this._spriteRenderer = this.GetComponent<SpriteRenderer>();
         }
         

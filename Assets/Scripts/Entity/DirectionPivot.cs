@@ -1,4 +1,5 @@
 using entity;
+using Entity.Player;
 using UnityEngine;
 
 namespace Entity
@@ -12,7 +13,7 @@ namespace Entity
     {
 
         // Instance du joueur parent.
-        private Player _player;
+        private Frog _player;
         // Instance du component SpriteRenderer utilisé.
         private SpriteRenderer _sprite;
     
@@ -21,7 +22,7 @@ namespace Entity
          */
         void Start()
         {
-            Player player = this.transform.parent.GetComponent<Player>();
+            Frog player = this.transform.parent.GetComponent<Frog>();
             this._sprite = this.GetComponent<SpriteRenderer>();
             if (player)
                 this._player = player;

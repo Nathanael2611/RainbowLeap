@@ -1,4 +1,5 @@
 using System;
+using Entity.Player;
 using UnityEngine;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -8,12 +9,13 @@ using Util;
 using Util.Caches;
 using Random = Unity.Mathematics.Random;
 
-namespace entity
+namespace Entity.Grabbables
 {
     
     /**
      * Cette classe représente le cercle coloré qui va être récupéré, et mélangé avec le·la joueur·se.
      */
+    [RequireComponent(typeof(Light2D))]
     [RequireComponent(typeof(SpriteRenderer))]
     public class ColoredCircle : Grabbable
     {
@@ -32,6 +34,7 @@ namespace entity
         private void Awake()
         {
             this._spriteRenderer = this.GetComponent<SpriteRenderer>();
+            this._light = this.GetComponent<Light2D>();
         }
 
         public override void Start()
@@ -40,7 +43,6 @@ namespace entity
             this.RigidBody.gravityScale = 0;
             this.RigidBody.mass = 0.1f;
             this.RigidBody.constraints = RigidbodyConstraints2D.FreezePosition;
-            this._light = this.GetComponent<Light2D>();
         }
         
         /**
@@ -76,12 +78,13 @@ namespace entity
          * Et on détruit cet objet.
          * <param name="player">L'instance du·de la joueur·se qui le récupère.</param>
          */
-        public override void PlayerGrab(Player player)
+        public override void PlayerGrab(Frog player)
         {
             player.setObjectiveColor(this.GetColor(), this.GetDensity());
             this.parentPlanet.grabbables.Remove(this);
             GameObject.Destroy(this.gameObject);
             this.parentPlanet.GenerateCircle();
+            player.IncrementActions(-1);
         }
 
         public float GetDensity()
@@ -114,11 +117,12 @@ namespace entity
         {
             Random random = new Random(seed);
             
-            GameObject circleObj = new GameObject();
+            GameObject circleObj = GameObject.Instantiate(Caches.PrefabCache.Get("Prefabs/ColoredCircleBase"));
+            //GameObject circleObj = new GameObject();
 
-            ColoredCircle coloredCircle = circleObj.AddComponent<ColoredCircle>();
+            ColoredCircle coloredCircle = circleObj.GetComponent<ColoredCircle>();
             coloredCircle.parentPlanet = futureParent;
-            RotationLock rotationLock = circleObj.AddComponent<RotationLock>();
+            RotationLock rotationLock = circleObj.GetComponent<RotationLock>();
             rotationLock.x = true;
             rotationLock.y = true;
 
@@ -131,8 +135,7 @@ namespace entity
                 random.NextFloat(0.5f, 1));
             coloredCircle._spriteRenderer.sprite = Caches.SpriteCache.Get(circleSprite);
 
-            Light2D light2D = coloredCircle.AddComponent<Light2D>();
-            light2D.pointLightOuterRadius = 5;
+            coloredCircle._light.pointLightOuterRadius = 5;
             
             return coloredCircle;
         }
