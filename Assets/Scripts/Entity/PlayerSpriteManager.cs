@@ -54,5 +54,24 @@ namespace entity
             }
             
         }
+
+        public Vector3 GetMouthPosition()
+        {
+            Vector3 mouthOffset = Vector3.zero;
+            if (this._spriteRenderer.sprite == standingSprite)
+            {
+                mouthOffset = new Vector3(0.43f * (this._spriteRenderer.flipX ? 1 : -1), 0.08F, 0);
+            }
+            else if(this._spriteRenderer.sprite == jumpSprite)
+            {
+                mouthOffset = new Vector3(0.43f * (this._spriteRenderer.flipX ? 1 : -1), 0.15F, 0);
+
+            }
+
+            mouthOffset = this._player.transform.TransformDirection(mouthOffset);
+            return this._player.transform.position + mouthOffset;
+        }
+        
     }
+    
 }

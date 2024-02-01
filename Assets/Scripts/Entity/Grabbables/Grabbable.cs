@@ -78,6 +78,13 @@ namespace Entity.Grabbables
          */
         public abstract Vector2 GrabScaleFactor();
 
+        public float ActualScaleFactor(Frog player)
+        {
+            float distance = Mathf.Max(0, Mathf.Min(Vector2.Distance(player.GetRigidbody().position, this.RigidBody.position), this._startDist));
+            float progress = Mathf.Max(0, Mathf.Min(distance * 1 / this._startDist, 1));
+            return progress;
+        }
+
         public abstract void ResetScale();
 
         /**

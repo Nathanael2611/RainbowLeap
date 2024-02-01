@@ -89,9 +89,9 @@ public class Planet : Attractor
         this._light.pointLightOuterRadius = this._light.pointLightInnerRadius + 2;
 
         if (this._collideWithPlayer && Frog.TheFrog.GetSimilitude() >= 99)
-        {
+        {   
             ColoredShockwave shockwave = ColoredShockwave.Create();
-            Frog.TheFrog.score = (int)(10 / ((this._size / 2)) * Frog.TheFrog.actions);
+            Frog.TheFrog.score += (int)(10 / ((this._size / 2)) * Frog.TheFrog.actions);
             Frog.TheFrog.IncrementActions(5);
             shockwave.ShockWave(this.transform.position, this._size, this._spriteRenderer.color);
             for (int i = 0; i < 10; i++)

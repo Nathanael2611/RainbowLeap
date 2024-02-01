@@ -118,11 +118,19 @@ namespace Entity.Player
         {
             if (this._attractor.planet && this._attractor.planet.isActiveAndEnabled)
             {
-                Planet planet = (Planet) this._attractor.planet;
-                return (float)Mathf.Max(0, Mathf.Min(100f, 120f - (float) CEDES.CalculateDeltaE(planet.GetPlanetColor(), this._spriteRenderer.color)));
+                if (typeof(Planet) == this._attractor.planet.GetType())
+                {
+                    Planet planet = this._attractor.planet as Planet;
+                    return (float)Mathf.Max(0, Mathf.Min(100f, 120f - (float) CEDES.CalculateDeltaE(planet.GetPlanetColor(), this._spriteRenderer.color)));
+                }
             }
 
             return 0F;
+        }
+
+        public PlayerSpriteManager GetSpriteManager()
+        {
+            return this._spriteManager;
         }
 
         /**

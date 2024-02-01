@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using Scrtwpns.Mixbox;
+using UnityEditor;
 using UnityEngine;
 using util;
 using Random = Unity.Mathematics.Random;
@@ -13,30 +16,47 @@ namespace Defs
      *
      * En gros, chaque Palette contient une couleur, et une liste de couleurs utiles pour la composer lors de mélanges.
      */
-    public class Palette
+    public class Palette : MonoBehaviour, IComparable<Palette>
     {
 
         // Liste de toutes les palettes enregistrées.
         public static List<Palette> palettes = new();
-
+        
         /**
          * Enregistre les palettes.
          */
         public static void RegisterPalettes()
         {
-            Palette.palettes.Clear();
-            Palette.palettes.Add(Palette.Create(Mixbox.Lerp(Helpers.ColorFromHex("#F4D003"), Helpers.ColorFromHex("#0157FB"), 0.5F)).AddWay(Helpers.ColorFromHex("#F4D003")).AddWay(Helpers.ColorFromHex("#0157FB")).Build());
-            Palette.palettes.Add(Palette.Create("#D4479B").AddWay(Color.red).AddWay(Color.white).Build());
-            Palette.palettes.Add(Palette.Create("#7F3C9D").AddWay("#0287CA").AddWay(Color.red).Build());
-            Palette.palettes.Add(Palette.Create("#FB611B").AddWay("#ED2851").AddWay("#FFCE18").Build());
-            Palette.palettes.Add(Palette.Create(Color.grey).AddWay(Color.black).AddWay(Color.white).Build());
-            Palette.palettes.Add(Palette.Create("#AB755F").AddWay("#A9D529").AddWay("#A72D95").Build());
+            //palettes.Clear();
+            //palettes.Add(New(Mixbox.Lerp(Helpers.ColorFromHex("#F4D003"), Helpers.ColorFromHex("#0157FB"), 0.5F)).Way(Helpers.ColorFromHex("#F4D003")).Way(Helpers.ColorFromHex("#0157FB")).Build());
+            //palettes.Add(New("#D4479B").Way(Color.red).Way(Color.white).Build());
+            //palettes.Add(New("#7F3C9D").Way("#0287CA").Way(Color.red).Build());
+            //palettes.Add(New("#FB611B").Way("#ED2851").Way("#FFCE18").Build());
+            //palettes.Add(New(Color.grey).Way(Color.black).Way(Color.white).Build());
+            //palettes.Add(New("#AB755F").Way("#A9D529").Way("#A72D95").Build());
+            //palettes.Add(New("#AEB71E").Way("#2A892D").Way("#FEFF01").Way(Color.white).Build());
+            //palettes.Add(New("#3D317B").Way("#823A84").Way("#1F4F99").Way(Color.grey).Build());
         }
 
+        private void OnEnable()
+        {
+            this.destination = new Color(this.destination.r, this.destination.g, this.destination.b, 1);
+            List<Color> ways = new();
+            foreach (Color color in this.ways)
+            {
+                ways.Add(new Color(color.r, color.g, color.b, 1F));
+            }
+
+            this.ways = ways;
+            palettes.Add(this);
+            palettes.Sort();
+            //Debug.Log("Register palettes");
+        }
+        
         // La couleur finale de la palette 
-        public readonly Color destination;
+        public Color destination;
         // Les couleurs pouvant être utiles pour sa composition.
-        public readonly List<Color> ways;
+        public List<Color> ways;
 
         /**
          * Constructeur.
@@ -86,12 +106,12 @@ namespace Defs
          * Crées un Builder de palette pour la couleur souhaitée.
          * <param name="destination">Couleur de destination avec laquelle initialiser le builder.</param>
          */
-        public static Builder Create(Color destination)
+        public static Builder New(Color destination)
         {
             return new Builder(destination);
         }
 
-        public static Builder Create(string destination)
+        public static Builder New(string destination)
         {
             return new Builder(destination);
         }
@@ -115,13 +135,13 @@ namespace Defs
                 this._destination = Helpers.ColorFromHex(hex);
             }
 
-            public Builder AddWay(Color color)
+            public Builder Way(Color color)
             {
                 this._ways.Add(color);
                 return this;
             }
 
-            public Builder AddWay(string hex)
+            public Builder Way(string hex)
             {
                 this._ways.Add(Helpers.ColorFromHex(hex));
                 return this;
@@ -137,5 +157,22 @@ namespace Defs
 
         }
 
+        public int IntValue()
+        {
+            int total = 0;
+            foreach (var color in this.ways)
+            {
+                total += (int) (color.r + color.g + color.b + color.a) * 256; 
+            }
+
+            total += (int)(this.destination.r + this.destination.g + this.destination.b + this.destination.a);
+            return total;
+        }
+        
+        public int CompareTo(Palette other)
+        {
+            return this.IntValue() - other.IntValue();
+        }
     }
+
 }
