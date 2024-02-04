@@ -82,10 +82,25 @@ namespace Util
 
                         if (!collide)
                         {
-                            Vector3 pos = Vector3.Lerp(last.generatedPlanet.transform.position, generator.transform.position, 0.5F);
-                            GameObject propulsor =
-                                GameObject.Instantiate(Caches.Caches.PrefabCache.Get("Prefabs/PropulsorBase"), generator.transform, true);
-                            propulsor.transform.position = pos;
+                            
+                            for (int j = -1; j <= 1; j++)
+                            {
+                                float interp = 0.5f + (j * 0.3f);
+                                
+                                Vector2 direction = (generator.transform.position -
+                                                     last.generatedPlanet.transform.position).normalized;
+
+                                Vector3 pos = Vector3.Lerp(
+                                    last.generatedPlanet.transform.position + Helpers.Vec2ToVec3(direction *
+                                        (last.generatedPlanet.GetSize() / 2)), 
+                                    generator.transform.position - Helpers.Vec2ToVec3(direction *
+                                        (generator.generatedPlanet.GetSize() / 2)),
+                                    interp);
+                                GameObject propulsor =
+                                    GameObject.Instantiate(Caches.Caches.PrefabCache.Get("Prefabs/PropulsorBase"), generator.transform, true);
+                                propulsor.transform.position = pos;
+                                
+                            }
                             break;
                         }
                         

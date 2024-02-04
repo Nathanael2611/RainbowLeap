@@ -59,6 +59,7 @@ namespace Entity.Player
         private Color _baseColor = Color.white;
         public Color objectiveColor = Color.white;
         private float _objectiveDensity = 1;
+        public bool playing = true;
 
         /**
          * Au tout début, initialise les différents components nécessaires au bon fonctionnement du code.

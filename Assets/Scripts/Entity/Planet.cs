@@ -9,6 +9,7 @@ using physic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Serialization;
 using util;
 using Util;
 using Util.Caches;
@@ -35,7 +36,7 @@ public class Planet : Attractor
     private uint _seed;
 
     // Taille
-    private float _size;
+    [FormerlySerializedAs("_size")] public float size;
     
     // Random
     private Random _random;
@@ -85,15 +86,15 @@ public class Planet : Attractor
     private void Update()
     {
         this._light.color = this.GetPlanetColor();
-        this._light.pointLightInnerRadius = this._size / 2F;
+        this._light.pointLightInnerRadius = this.size / 2F;
         this._light.pointLightOuterRadius = this._light.pointLightInnerRadius + 2;
 
-        if (this._collideWithPlayer && Frog.TheFrog.GetSimilitude() >= 99)
+        if (Frog.TheFrog.playing && this._collideWithPlayer && Frog.TheFrog.GetSimilitude() >= 99)
         {   
             ColoredShockwave shockwave = ColoredShockwave.Create();
-            Frog.TheFrog.score += (int)(10 / ((this._size / 2)) * Frog.TheFrog.actions);
+            Frog.TheFrog.score += (int)(10 / ((this.size / 2)) * Frog.TheFrog.actions);
             Frog.TheFrog.IncrementActions(5);
-            shockwave.ShockWave(this.transform.position, this._size, this._spriteRenderer.color);
+            shockwave.ShockWave(this.transform.position, this.size, this._spriteRenderer.color);
             for (int i = 0; i < 10; i++)
             {
                 Palette randomPalette = Palette.RandomPalette(); 
@@ -108,7 +109,8 @@ public class Planet : Attractor
                         if (grabbable.GetType() == typeof(ColoredCircle) && this._random.NextBool())
                         {
                             ColoredCircle circle = grabbable as ColoredCircle;
-                            circle.GetSpriteRenderer().color = randomPalette.RandomWay();
+                            if(circle) 
+                                circle.GetSpriteRenderer().color = randomPalette.RandomWay();
                         }
                     }
 
@@ -149,13 +151,13 @@ public class Planet : Attractor
         Rigidbody2D rigidbody2D = planetObj.GetComponent<Rigidbody2D>();
         Planet planet = planetObj.GetComponent<Planet>();
         planet._random = new Random(seed);
-        planet._size = planet._random.NextFloat(5, 20);
+        planet.size = planet._random.NextFloat(5, 20);
         planet._seed = seed;
         spriteRenderer.sprite = Caches.SpriteCache.Get(planetSprite);
-        planetObj.transform.localScale = new Vector3(planet._size, planet._size, 1);
+        planetObj.transform.localScale = new Vector3(planet.size, planet.size, 1);
         planet.Palette = Palette.RandomPalette(planet._random);
         spriteRenderer.color = planet.Palette.destination;
-        rigidbody2D.mass = planet._size * 25F;
+        rigidbody2D.mass = planet.size * 25F;
         planetObj.transform.SetParent(generator.transform);
         planetObj.transform.position = generator.transform.position;
         return planet;
@@ -168,7 +170,7 @@ public class Planet : Attractor
     {
         this._circleRandom = new Random(this._seed);
         this._mapGenerator = mapGenerator;
-        for (int i = 0; i < 1 * this._size; i++)
+        for (int i = 0; i < 1 * this.size; i++)
         {
             
             this.GenerateCircle();
@@ -186,7 +188,7 @@ public class Planet : Attractor
             {
                 float rot = this._circleRandom.NextFloat(0, 365) * Mathf.Deg2Rad;
                 Vector2 pos = Helpers.Rotate(
-                    new Vector3(0, this._circleRandom.NextFloat(this._size / 2 + 1, this._size + 5), 0),
+                    new Vector3(0, this._circleRandom.NextFloat(this.size / 2 + 1, this.size + 5), 0),
                     rot);
                 
                 circle.transform.position = this.transform.position + Helpers.Vec2ToVec3(pos);
@@ -233,7 +235,7 @@ public class Planet : Attractor
      */
     public float GetSize()
     {
-        return this._size;
+        return this.size;
     }
 
     private void OnCollisionEnter2D(Collision2D col)

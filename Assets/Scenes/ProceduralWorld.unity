@@ -372,7 +372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a6c00cfb7f844b4d836f50a657d302a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 9760
+  seed: 13440
   planets: []
   planetCount: 10
   optimizationRange: 45
@@ -458,6 +458,50 @@ PrefabInstance:
     - target: {fileID: 2458734957224721951, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
       propertyPath: m_Name
       value: Essentials
+      objectReference: {fileID: 0}
+    - target: {fileID: 3370899201992253802, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3370899201992253802, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3370899201992253802, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3370899201992253802, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3370899201992253802, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 415.7774
+      objectReference: {fileID: 0}
+    - target: {fileID: 3370899201992253802, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 93.7625
+      objectReference: {fileID: 0}
+    - target: {fileID: 3370899201992253802, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 93.401
+      objectReference: {fileID: 0}
+    - target: {fileID: 3370899201992253802, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -14.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207905396914804894, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_fontSize
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207905396914804894, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207905396914804894, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 6268708276492385701, guid: a5a7b45659feea242898bf85b9f4ea98, type: 3}
       propertyPath: m_PresetInfoIsWorld
