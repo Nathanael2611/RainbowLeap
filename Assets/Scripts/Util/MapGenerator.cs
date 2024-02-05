@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Defs;
+using Entity.Planets;
 using Entity.Player;
 using UnityEngine;
 using util;
@@ -15,7 +16,7 @@ namespace Util
     {
 
         // La seed a utiliser, définie dans l'éditeur, ou pas 
-        public uint seed;
+        public uint seed = 0;
         // La liste des planètes déjà générées, accessible dans l'éditeur
         public List<Planet> planets = new();
         public int planetCount = 6;
@@ -45,6 +46,10 @@ namespace Util
             // TODO: changer ça de place, c'pas propre DU TOUT.
             Palette.RegisterPalettes();
             // Définition du random avec la seed.
+            if (this.seed == 0)
+            {
+                this.seed = (uint)UnityEngine.Random.Range(0, 100000);
+            }
             Random random = new Random(this.seed);
             // Va stocker la dernière planète générée, utile dans le for ci dessous, pour les mettre à bonne distance
             // en fonction de leur radius.

@@ -1,9 +1,11 @@
 using System;
 using entity;
 using Entity.Grabbables;
+using Entity.Planets;
 using input;
 using physic;
 using Scrtwpns.Mixbox;
+using UI.Tutorial;
 using UnityEngine;
 using util;
 using Util;
@@ -36,6 +38,8 @@ namespace Entity.Player
         private float           _aimValue, _aimAngle, _turnAngle, _aimStop, _aimFactor = 1;
         private Vector2         _aimDirection;
         private bool            _onGround = false;
+
+        private Tutorial _tutorial = null;
 
         public bool reverseJumpAndDirection = false;
         // Le nombre d'actions qu'il reste au·à la joueur·se
@@ -76,6 +80,16 @@ namespace Entity.Player
             this._spriteManager = this.GetComponent<PlayerSpriteManager>();
         }
 
+        public void SetTutorial(Tutorial tutorial)
+        {
+            this._tutorial = tutorial;
+        }
+
+        public Tutorial GetTutorial()
+        {
+            return this._tutorial;
+        }
+        
         public Tongue GetTongue()
         {
             return this._tongue;
@@ -286,6 +300,8 @@ namespace Entity.Player
             else
             {
                 this.TryGrab(this._turnAngle, false);
+                if (this._tutorial)
+                    this._tutorial.Jump();
             }
         }
         
@@ -306,6 +322,8 @@ namespace Entity.Player
 
         public void ChangeDirectionClick()
         {
+            if (this._tutorial)
+                this._tutorial.DirectionChange();
             if (this._turnValue > 0)
             {
                 this._turnValue = -1;
@@ -323,6 +341,8 @@ namespace Entity.Player
         {
             this._aimValue = 0;
             this._aimFactor = this._turnAngle > 0 ? 1 : -1;
+            if (this._tutorial)
+                this._tutorial.AimStart();
             if (this._tongue)
             {
                 this._tongue.Comeback();

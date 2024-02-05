@@ -372,9 +372,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a6c00cfb7f844b4d836f50a657d302a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 13440
+  seed: 0
   planets: []
-  planetCount: 10
+  planetCount: 12
   optimizationRange: 45
   lastVisibilityUpdate: -10
 --- !u!4 &1237418701
