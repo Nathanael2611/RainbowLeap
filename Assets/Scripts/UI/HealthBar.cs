@@ -10,6 +10,11 @@ namespace UI
         private RectTransform   _rect;
         private RawImage        _rawImage;
 
+        public float changeDuration = 1;
+        
+        private int _lastHealth = 0, _healthToLerp = 0;
+        private float _changeTime;
+        
         private float _totalWidth;
         
         private void Awake()
@@ -25,7 +30,18 @@ namespace UI
 
         private void Update()
         {
-            this._rect.sizeDelta = new Vector2((Frog.TheFrog.maxActions - Frog.TheFrog.actions) * this._totalWidth / Frog.TheFrog.maxActions, this._rect.sizeDelta.y);
+
+            int healthInt = Frog.TheFrog.actions;
+            if (healthInt != this._lastHealth)
+            {
+                this._healthToLerp = this._lastHealth;
+                this._changeTime = Time.unscaledTime;
+            }
+
+            this._lastHealth = healthInt;
+            float health = Mathf.Lerp(this._healthToLerp, healthInt, Mathf.Max(0, Mathf.Min(this.changeDuration, Time.unscaledTime - this._changeTime)) / this.changeDuration);
+
+            this._rect.sizeDelta = new Vector2((Frog.TheFrog.maxActions - health) * this._totalWidth / Frog.TheFrog.maxActions, this._rect.sizeDelta.y);
             Color color = Color.HSVToRGB((Mathf.Cos(Time.time * 0.2F) + 1F) / 2F, 1, 1);
             this._rawImage.color = color;
         }

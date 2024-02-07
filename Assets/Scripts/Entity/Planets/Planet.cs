@@ -91,8 +91,8 @@ namespace Entity.Planets
             if (Frog.TheFrog.playing && this._collideWithPlayer && Frog.TheFrog.GetSimilitude() >= 99)
             {   
                 ColoredShockwave shockwave = ColoredShockwave.Create();
-                Frog.TheFrog.score += (int)(10 / ((this.size / 2)) * Frog.TheFrog.actions);
-                Frog.TheFrog.IncrementActions(5);
+                Frog.TheFrog.score += (int)(10 * (Frog.TheFrog.actions / 2));
+                Frog.TheFrog.IncrementActions(3);
                 shockwave.ShockWave(this.transform.position, this.size, this._spriteRenderer.color);
                 for (int i = 0; i < 10; i++)
                 {

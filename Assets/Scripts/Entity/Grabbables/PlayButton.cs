@@ -16,8 +16,8 @@ namespace Entity.Grabbables
         }
 
         public override void PlayerGrab(Frog player)
-        {            
-            SceneManager.LoadSceneAsync(1);
+        {
+            SceneManager.LoadSceneAsync("ProceduralWorld");
         }
     }
 }

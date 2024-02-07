@@ -84,6 +84,7 @@ namespace Entity.Player
             Attractor playerAttractor = frog.GetComponent<Attractor>();
             this._attractor.DontAttract(playerAttractor);
             playerAttractor.DontAttract(this._attractor);
+            playerAttractor.planet.DontAttract(this._attractor);
             this._attractor.autoPlanet = false;
             
             this._renderer.material = Resources.Load<Material>("Materials/TongueMaterial") as Material;
@@ -179,6 +180,8 @@ namespace Entity.Player
             if (this._grabbable == grabbable)
             {
                 this._grabbable.PlayerGrab(this._frog);
+                if (this._frog.GetTutorial())
+                    this._frog.GetTutorial().PlayerGrab(grabbable);
             }
         }
 
