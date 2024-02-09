@@ -51,8 +51,6 @@ namespace UI.Tutorial
                 this._lastText = this.TextMeshPro.text;
                 this._typingEffeect.StartTyping(this._lastText.Length / 20F);
             }
-            
-            
         }
 
         public abstract string GetHintText();

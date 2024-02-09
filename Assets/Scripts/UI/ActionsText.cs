@@ -16,7 +16,7 @@ namespace UI
 
         private void Update()
         {
-            Frog frog = Frog.TheFrog;
+            Frog frog = Frog.TheFrog();
             if (frog)
             {
                 this._textMeshPro.SetText(frog.actions + "");

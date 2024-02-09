@@ -25,7 +25,7 @@ namespace UI
 
         private void Update()
         {
-            Frog frog = Frog.TheFrog;
+            Frog frog = Frog.TheFrog();
             if (frog)
             {
                 if (frog.score != this._lastScore)

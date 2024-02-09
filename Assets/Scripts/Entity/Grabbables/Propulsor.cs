@@ -19,7 +19,7 @@ namespace Entity.Grabbables
             this.RigidBody.constraints = RigidbodyConstraints2D.FreezeAll;
             this._collider2D = this.GetComponent<CircleCollider2D>();
             this._collider2D.isTrigger = true;
-            this.GetAttractor().DontAttract(Frog.TheFrog.GetAttractor());
+            this.GetAttractor().DontAttract(Frog.TheFrog().GetAttractor());
 
         }
 

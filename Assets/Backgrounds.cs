@@ -18,7 +18,7 @@ public class Backgrounds : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Frog thePlayer = Frog.TheFrog;
+        Frog thePlayer = Frog.TheFrog();
         if(!thePlayer)
             return;
         Vector2 position = thePlayer.GetRigidbody().position;

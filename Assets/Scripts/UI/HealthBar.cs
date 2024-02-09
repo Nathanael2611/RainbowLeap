@@ -30,8 +30,8 @@ namespace UI
 
         private void Update()
         {
-
-            int healthInt = Frog.TheFrog.actions;
+            Frog theFrog = Frog.TheFrog();
+            int healthInt = theFrog.actions;
             if (healthInt != this._lastHealth)
             {
                 this._healthToLerp = this._lastHealth;
@@ -41,7 +41,7 @@ namespace UI
             this._lastHealth = healthInt;
             float health = Mathf.Lerp(this._healthToLerp, healthInt, Mathf.Max(0, Mathf.Min(this.changeDuration, Time.unscaledTime - this._changeTime)) / this.changeDuration);
 
-            this._rect.sizeDelta = new Vector2((Frog.TheFrog.maxActions - health) * this._totalWidth / Frog.TheFrog.maxActions, this._rect.sizeDelta.y);
+            this._rect.sizeDelta = new Vector2((theFrog.maxActions - health) * this._totalWidth / theFrog.maxActions, this._rect.sizeDelta.y);
             Color color = Color.HSVToRGB((Mathf.Cos(Time.time * 0.2F) + 1F) / 2F, 1, 1);
             this._rawImage.color = color;
         }

@@ -16,15 +16,16 @@ namespace UI.Tutorial
         private void Start()
         {
             this.SetChildActives(false);
-            PressManager.Instance.RegisterListener(this);
+            PressManager.Instance().RegisterListener(this.gameObject);
             this._typingEffect = null;
         }
 
         private void Update()
         {
+            
             if (!this._hasBeenShown)
             {
-                Frog theFrog = Frog.TheFrog;
+                Frog theFrog = Frog.TheFrog();
                 if (theFrog.actions < theFrog.maxActions - 4)
                 {
                     this._hasBeenShown = true;

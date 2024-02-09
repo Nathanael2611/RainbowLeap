@@ -10,7 +10,7 @@ namespace UI.Tutorial
         {
             if (this.frog.GetTongue())
                 return "";
-            return this.frog.IsAiming() ? "Maintenant, visez le cercle 'Play', et relachez." : "Pour viser, maintenez espace!";
+            return this.frog.IsAiming() ? "Maintenant, vises le cercle 'Jouer', et relâches." : "Pour viser, maintiens espace!";
         }
 
         public override void Update()

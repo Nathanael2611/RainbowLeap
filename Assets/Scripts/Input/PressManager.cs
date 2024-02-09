@@ -14,7 +14,16 @@ namespace input
         /**
          * Instance supposée unique du PressManager, qui doit être un objet unique.
          */
-        public static PressManager Instance;
+        private static PressManager _instance;
+
+        public static PressManager Instance()
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.FindObjectOfType<PressManager>();
+            }
+            return _instance;
+        }
 
         // La touche du clavier à utiliser pour le one button.
         public KeyCode keyToUse = KeyCode.Space;
@@ -22,7 +31,7 @@ namespace input
         public float doubleClickTime = 0.3F;
 
         // Liste de tous les listeners enregistrés.
-        private List<IInputListener> _listeners = new();
+        private List<GameObject> _listeners = new();
         // Variables utiles pour la logique du code.
         private float _lastDown = -9, _lastUp = 0;
         private bool _clickPending = false, _wasHolding = false;
@@ -32,7 +41,7 @@ namespace input
          */
         private void Awake()
         {
-            Instance = this;
+            _instance = this;
         }
 
         /**
@@ -44,7 +53,7 @@ namespace input
         private void Update()
         {
             // A chaque update, on définit l'instance supposée unique, juste pour être sûr·e·s.
-            Instance = this;
+            _instance = this;
 
             // Si la touche est pressée, et qu'elle a déjà été pressée il y a moins de X secondes, alors on dispense un double clique.
             // Sinon, on annonce qu'on a besoin d'un clique.
@@ -97,7 +106,7 @@ namespace input
         private void HoldStart()
         {
             this._wasHolding = true;
-            foreach (IInputListener listener in this._listeners)
+            foreach (IInputListener listener in this.GetListeners())
             {
                 listener.HoldStart();
             }
@@ -110,7 +119,7 @@ namespace input
         private void HoldStop()
         {
             this._wasHolding = false;
-            foreach (IInputListener listener in this._listeners)
+            foreach (IInputListener listener in this.GetListeners())
             {
                 listener.HoldEnd();
             }
@@ -123,7 +132,7 @@ namespace input
         public void DoubleClick()
         {
             this._clickPending = false;
-            foreach (IInputListener listener in this._listeners)
+            foreach (IInputListener listener in this.GetListeners())
             {
                 listener.DoubleClick();
             }
@@ -136,8 +145,10 @@ namespace input
         public void SimpleClick()
         {
             this._clickPending = false;
-            foreach (IInputListener listener in this._listeners)
+
+            foreach (IInputListener listener in this.GetListeners())
             {
+                
                 listener.SimpleClick();
             }
         }
@@ -163,17 +174,33 @@ namespace input
         /**
          * Permet d'enregistrer un listener, qui écoutera les entrées one button.
          */
-        public void RegisterListener(IInputListener listener)
+        public void RegisterListener(GameObject listener)
         {
+            if(this._listeners.Contains(listener))
+                return;
             this._listeners.Add(listener);
         }
 
         /**
          * Permet de désenregistrer un listener.
          */
-        public void UnregisterListener(IInputListener listener)
+        public void UnregisterListener(GameObject listener)
         {
             this._listeners.Remove(listener);
+        }
+        
+        public List<IInputListener> GetListeners()
+        {
+            List<IInputListener> collected = new();
+            foreach (GameObject listenerObj in this._listeners)
+            {
+                var components = listenerObj.GetComponents<IInputListener>();
+                foreach (IInputListener inputListener in components)
+                {
+                    collected.Add(inputListener);
+                }
+            }
+            return collected;
         }
     }
 }

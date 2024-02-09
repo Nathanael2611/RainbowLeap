@@ -27,11 +27,12 @@ public class PlayerCamera : MonoBehaviour
     {
         if(!this.playerToFollow)
             return;
-        if (this.playerToFollow.OnGround() || PressManager.Instance.IsHolding() || this.playerToFollow.colorSelection)
+        if (this.playerToFollow.OnGround() || PressManager.Instance().IsHolding() || this.playerToFollow.colorSelection)
         {
-            this._zoomFactor = Mathf.Min(1, Mathf.Max(0, this._zoomFactor + (PressManager.Instance.IsHolding() ? 1 : -1) * Time.unscaledDeltaTime));
+            this._zoomFactor = Mathf.Min(1, Mathf.Max(0, this._zoomFactor + (PressManager.Instance().IsHolding() ? 1 : -1) * Time.unscaledDeltaTime));
         }
         this._camera.orthographicSize = 5.5F + 4 * this._zoomFactor;
+        
     }
 
 }

@@ -30,7 +30,7 @@ namespace UI
          */
         void Update()
         {
-            Frog player = Frog.TheFrog;
+            Frog player = Frog.TheFrog();
             if(!player || !this._textMeshPro)
                 return;
             Attractor playerAttractor = player.GetAttractor();

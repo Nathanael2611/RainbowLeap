@@ -89,11 +89,12 @@ namespace Entity.Planets
             this._light.pointLightInnerRadius = this.size / 2F;
             this._light.pointLightOuterRadius = this._light.pointLightInnerRadius + 2;
 
-            if (Frog.TheFrog.playing && this._collideWithPlayer && Frog.TheFrog.GetSimilitude() >= 99)
+            Frog theFrog = Frog.TheFrog();
+            if (theFrog.playing && this._collideWithPlayer && theFrog.GetSimilitude() >= 99)
             {   
                 ColoredShockwave shockwave = ColoredShockwave.Create();
-                Frog.TheFrog.score += (int)(10 * (Frog.TheFrog.actions / 2));
-                Frog.TheFrog.IncrementActions(3);
+                theFrog.score += (int)(10 * (theFrog.actions / 2));
+                theFrog.IncrementActions(3);
                 shockwave.ShockWave(this.transform.position, this.size, this._spriteRenderer.color);
                 for (int i = 0; i < 10; i++)
                 {
@@ -247,7 +248,7 @@ namespace Entity.Planets
 
         private void OnCollisionEnter2D(Collision2D col)
         {
-            if (col.rigidbody == Frog.TheFrog.GetRigidbody())
+            if (col.rigidbody == Frog.TheFrog().GetRigidbody())
             {
                 this._collideWithPlayer = true;
             }
@@ -255,7 +256,7 @@ namespace Entity.Planets
 
         private void OnCollisionExit2D(Collision2D other)
         {
-            if (other.rigidbody == Frog.TheFrog.GetRigidbody())
+            if (other.rigidbody == Frog.TheFrog().GetRigidbody())
             {
                 this._collideWithPlayer = false;
             }

@@ -32,7 +32,7 @@ namespace Util
                 for (int i = 0; i < this.transform.childCount; i++)
                 {
                     Transform child = this.transform.GetChild(i);
-                    child.gameObject.SetActive(Vector3.Distance(Frog.TheFrog.transform.position, child.position) < this.optimizationRange);
+                    child.gameObject.SetActive(Vector3.Distance(Frog.TheFrog().transform.position, child.position) < this.optimizationRange);
                 }
             }
         }

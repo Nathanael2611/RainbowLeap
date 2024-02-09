@@ -9,7 +9,7 @@ namespace Entity.Grabbables
         public override void Start()
         {
             base.Start();
-            this.GetAttractor().DontAttract(Frog.TheFrog.GetAttractor());
+            this.GetAttractor().DontAttract(Frog.TheFrog().GetAttractor());
         }
         
         public override Vector2 GrabScaleFactor()

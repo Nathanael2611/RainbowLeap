@@ -25,7 +25,17 @@ namespace Entity.Player
     {
     
         // Instance unique du·de la joueur·se.
-        public static Frog TheFrog;
+        private static Frog _instance;
+
+        public static Frog TheFrog()
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.FindObjectOfType<Frog>();
+            }
+            
+            return _instance;
+        }
         
         /**
          * De nombreuuuuuses instances de pleins de components contenus dans le GameObject du·de la joueur·se.
@@ -76,7 +86,7 @@ namespace Entity.Player
          */
         private void Awake()
         {
-            Frog.TheFrog = this;
+            _instance = this;
             this._rigidBody = this.GetComponent<Rigidbody2D>();
             this._rigidBody.gravityScale = 0;
             this._spriteRenderer = this.GetComponent<SpriteRenderer>();
@@ -121,7 +131,7 @@ namespace Entity.Player
          */
         private void Start()
         {
-            PressManager.Instance.RegisterListener(this);
+            PressManager.Instance().RegisterListener(this.gameObject);
             this.objectiveColor = this.GetColor();
             this._baseColor = this.GetColor();
         }
@@ -187,7 +197,7 @@ namespace Entity.Player
          */
         private void Update()
         {
-
+            _instance = this;
             if (this.colorSelection)
             {
                 this.objectiveColor = Color.HSVToRGB(
@@ -199,7 +209,7 @@ namespace Entity.Player
             float colorChangeProgress = Math.Max(0, Math.Min(1, (Time.time - this._setObjectiveTime) * 1 / 2));
             this._spriteRenderer.color = Mixbox.Lerp(this._baseColor, this.objectiveColor, colorChangeProgress * this._objectiveDensity);
             
-            if (PressManager.Instance.IsHolding())
+            if (PressManager.Instance().IsHolding())
             {
                 this._aimValue += Time.unscaledDeltaTime ;
             }
@@ -292,7 +302,7 @@ namespace Entity.Player
          */
         public bool IsAiming()
         {
-            return PressManager.Instance.IsHolding();
+            return PressManager.Instance().IsHolding();
         }
 
         /**
