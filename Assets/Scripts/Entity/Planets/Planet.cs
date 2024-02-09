@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using Defs;
 using Entity.Grabbables;
 using Entity.Player;
@@ -22,7 +23,7 @@ namespace Entity.Planets
     {
 
         // Chemin d'accès vers le sprite de la planète.
-        public static String planetSprite = "Textures/Circle512";
+        public static String planetSprite = "Textures/Circle1024";
 
         /**
      * Quelques components justes et nécessaires.
@@ -178,9 +179,16 @@ namespace Entity.Planets
 
         public void GenerateCircle()
         {
-            ColoredCircle circle = ColoredCircle.Create(this, (uint)(this._circleRandom.NextInt()));
-            
-            circle.GetSpriteRenderer().color = this._circleRandom.NextBool() ? this.Palette.RandomWay(this._circleRandom) : Palette.RanomWayInRandomPalette(this._circleRandom);
+            Grabbable circle;
+            if (_random.NextInt(0, 100) > 4)
+            {
+                circle = ColoredCircle.Create(this, (uint)(this._circleRandom.NextInt()));
+                ((ColoredCircle)circle).GetSpriteRenderer().color = this._circleRandom.NextBool() ? this.Palette.RandomWay(this._circleRandom) : Palette.RanomWayInRandomPalette(this._circleRandom);
+            }
+            else
+            {
+                circle = GameObject.Instantiate(Caches.PrefabCache.Get("Prefabs/Pipette")).GetComponent<Pipette>();
+            }
             // Ce morceau de code permet de vérifier qu'on ne fasse pas spawn un cercle dans un autre.
             // ON teste 10 fois max des positions, pour en trouver une qui n'entre en collision avec rien.
             for (int security = 0; security < 10; security++)
@@ -191,7 +199,7 @@ namespace Entity.Planets
                     rot);
                 
                 circle.transform.position = this.transform.position + Helpers.Vec2ToVec3(pos);
-                float scale = this._circleRandom.NextFloat(0.6F, 2);
+                float scale = circle.GetType() == typeof(ColoredCircle) ? this._circleRandom.NextFloat(0.6F, 2) : 1F;
                 circle.transform.localScale = new Vector3(scale, scale, scale);
 
                 bool collide = false;

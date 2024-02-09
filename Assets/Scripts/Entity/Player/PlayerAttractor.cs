@@ -11,7 +11,7 @@ namespace Entity.Player
 
         public override bool OnAttractedBy(Attractor attractor, ref Vector2 force)
         {
-            if (frog.IsAiming())
+            if (this.frog.IsAiming() || this.frog.colorSelection)
                 return false;
             return base.OnAttractedBy(attractor, ref force);
         }

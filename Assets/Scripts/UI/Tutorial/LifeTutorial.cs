@@ -11,11 +11,13 @@ namespace UI.Tutorial
     {
         private bool _hasBeenShown = false;
         private bool _activeChilds = false;
-        
+        private TypingEffeect _typingEffect;
+
         private void Start()
         {
             this.SetChildActives(false);
             PressManager.Instance.RegisterListener(this);
+            this._typingEffect = null;
         }
 
         private void Update()
@@ -23,7 +25,7 @@ namespace UI.Tutorial
             if (!this._hasBeenShown)
             {
                 Frog theFrog = Frog.TheFrog;
-                if (theFrog.actions < theFrog.maxActions - 3)
+                if (theFrog.actions < theFrog.maxActions - 4)
                 {
                     this._hasBeenShown = true;
                     this.SetChildActives(true);
@@ -32,19 +34,30 @@ namespace UI.Tutorial
 
         }
 
+        private void OnEnable()
+        {
+        }
+
         public void SetChildActives(bool active)
         {
             this._activeChilds = active;
             for (int i = 0; i < this.transform.childCount; i++)
             {
                 GameObject o = this.transform.GetChild(i).gameObject;
-                o.SetActive(active);
+                TypingEffeect type = o.GetComponentInChildren<TypingEffeect>();
+                if (type)
+                    this._typingEffect = type;
+                if(o != null) 
+                    o.SetActive(active);
             }
         }
 
         public void SimpleClick()
         {
-            this.SetChildActives(false);
+            if (this._typingEffect && !this._typingEffect.IsTyping())
+            {
+                this.SetChildActives(false);
+            }
         }
 
         public void DoubleClick()

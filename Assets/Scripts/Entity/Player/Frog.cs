@@ -7,6 +7,7 @@ using physic;
 using Scrtwpns.Mixbox;
 using UI.Tutorial;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using util;
 using Util;
 using Color = UnityEngine.Color;
@@ -47,6 +48,11 @@ namespace Entity.Player
 
         private float _turnValue = 1, _lastJump;
 
+        private float _deathComing = 0;
+        private bool _dying = false;
+
+        public bool colorSelection = false;
+        
         /**
          * jumpStrength, permet depuis l'éditeur de changer la puissance du saut de la grenouille.
          * tongueStrength, premet de changer la force de départ de la langue.
@@ -78,6 +84,21 @@ namespace Entity.Player
             this._attractor = this.GetComponent<PlayerAttractor>();
             this._attractor.frog = this;
             this._spriteManager = this.GetComponent<PlayerSpriteManager>();
+        }
+
+        public bool IsDeathComing()
+        {
+            return this._deathComing > 0;
+        }
+
+        public bool ShouldBeDead()
+        {
+            return this.IsDeathComing() && Time.unscaledTime > this._deathComing;
+        }
+
+        public void UnScheduleDeath()
+        {
+            this._deathComing = 0;
         }
 
         public void SetTutorial(Tutorial tutorial)
@@ -124,6 +145,19 @@ namespace Entity.Player
                 }
                 this._onGround = i > 0;
             }
+
+            if (this.actions <= 0 && !this.IsDeathComing())
+            {
+                this._deathComing = Time.unscaledTime + 2F;
+            }
+
+            if (this.ShouldBeDead() && !this._dying)
+            {
+                PlayerPrefs.SetInt("LastScore", this.score);
+                PlayerPrefs.Save();
+                this._dying = true;
+                SceneManager.LoadSceneAsync("Scenes/GameOver");
+            }
         }
 
         /**
@@ -153,8 +187,18 @@ namespace Entity.Player
          */
         private void Update()
         {
+
+            if (this.colorSelection)
+            {
+                this.objectiveColor = Color.HSVToRGB(
+                    (Mathf.Cos(Time.time / 2F) + 1f) / 2f, 1, 0.5F + (Mathf.Cos(Time.time * 2) + 1f) / 4f
+                );
+                this._baseColor = this.objectiveColor;
+            }
+            
             float colorChangeProgress = Math.Max(0, Math.Min(1, (Time.time - this._setObjectiveTime) * 1 / 2));
             this._spriteRenderer.color = Mixbox.Lerp(this._baseColor, this.objectiveColor, colorChangeProgress * this._objectiveDensity);
+            
             if (PressManager.Instance.IsHolding())
             {
                 this._aimValue += Time.unscaledDeltaTime ;
@@ -310,6 +354,14 @@ namespace Entity.Player
          */
         public void SimpleClick()
         {
+            if (this.colorSelection)
+            {
+                this.colorSelection = false;
+                ColoredShockwave coloredShockwave = ColoredShockwave.Create();
+                coloredShockwave.transform.SetParent(this.transform, true);
+                coloredShockwave.ShockWave(this.transform.position, 1, this.objectiveColor);
+                return;
+            }
             if (this.reverseJumpAndDirection)
             {
                 this.ChangeDirectionClick();
@@ -413,6 +465,12 @@ namespace Entity.Player
         public void IncrementActions(int i)
         {
             this.actions = Math.Min(this.maxActions, Math.Max(this.actions + i, 0));
+            this.UnScheduleDeath();
+        }
+
+        public void ActivateColorSelection()
+        {
+            this.colorSelection = true;
         }
     }
     

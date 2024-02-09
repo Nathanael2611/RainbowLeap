@@ -79,7 +79,7 @@ namespace Entity.Player
             this.tongueStrength = tongueStrength;
             this.tongueMaxDistance = tongueMaxDistance;
             this._renderer.positionCount = 2;
-            this._renderer.startWidth = 0.22F;
+            this._renderer.startWidth = 0.1F;
 
             Attractor playerAttractor = frog.GetComponent<Attractor>();
             this._attractor.DontAttract(playerAttractor);

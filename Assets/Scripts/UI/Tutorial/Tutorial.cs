@@ -48,7 +48,6 @@ namespace UI.Tutorial
 
             if (this.TextMeshPro.text != this._lastText)
             {
-                Debug.Log("StartTyping");
                 this._lastText = this.TextMeshPro.text;
                 this._typingEffeect.StartTyping(this._lastText.Length / 20F);
             }

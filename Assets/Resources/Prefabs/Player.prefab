@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47ea5cc3394b8444e8e4f5bad5f53cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpSprite: {fileID: 21300000, guid: db44b9b8ed5e7174793adfdaa64aebcb, type: 3}
+  jumpSprite: {fileID: 21300000, guid: a9e298293ba19b7439729aeab2de4a3f, type: 3}
   standingSprite: {fileID: 21300000, guid: 6d08984e5fe9d0f4b806bb8c317c687a, type: 3}
   frontSprite: {fileID: 21300000, guid: f12df3c2496f50846b85fbd3fe6a4b4e, type: 3}
 --- !u!114 &4474387332670133990

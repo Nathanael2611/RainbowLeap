@@ -9,6 +9,7 @@ namespace UI.Tutorial
 
         private TextMeshProUGUI _text;
         private float _typeStart;
+        public float startOffset = 0F;
         public float typeDuration = 1F;
         public string textToType = "";
         
@@ -24,9 +25,13 @@ namespace UI.Tutorial
 
         public void StartTyping(float typeDuration)
         {
-            this._typeStart = Time.unscaledTime;
+            this._typeStart = Time.unscaledTime + this.startOffset;
             this.typeDuration = typeDuration;
-            this.textToType = this._text.text;
+            if (this._text && this._text.text != null)
+            {
+                this.textToType = this._text.text;
+            }
+
         }
 
         public void StartTyping()
@@ -40,8 +45,14 @@ namespace UI.Tutorial
             if (length <= 0)
                 return;
             float progress = Mathf.Min(this.typeDuration, Mathf.Max(0, Time.unscaledTime - this._typeStart)) / this.typeDuration;
-            int lerp = (int) Mathf.Lerp(0, length - 1, progress);
+            int lerp = (int) Mathf.Lerp(0, length, progress);
             this._text.SetText(this.textToType.Substring(0, lerp));
+        }
+
+        public bool IsTyping()
+        {
+            float progress = Mathf.Min(this.typeDuration, Mathf.Max(0, Time.unscaledTime - this._typeStart)) / this.typeDuration;
+            return progress < 1;
         }
     }
 }

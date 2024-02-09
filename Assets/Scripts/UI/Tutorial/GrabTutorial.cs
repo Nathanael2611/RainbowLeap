@@ -15,14 +15,14 @@ namespace UI.Tutorial
             if (this._secondGrabTime > 0)
             {
                 float since = Time.unscaledTime - this._secondGrabTime;
-                return since < 2 ? "Les couleurs se melangent..." : since < 5.5F ? "Le pourcentage de ressemblance change..." : "Atteignez les 100%!";
+                return since < 3 ? "Ta couleur se mélange à celle de l'orbe..." : since < 6.5F ? "Le pourcentage de ressemblance avec la planète change..." : "Atteignez les 100%!";
             }
             if (this._firstGrabTime > 0)
             {
                 float since = Time.unscaledTime - this._firstGrabTime;
-                return since > 2 ? "Essayez encore!" : "Votre couleur change...";
+                return since > 2.2 ? "Essayez encore!" : "Ta couleur change...";
             }
-            return "Visez pour attraper une orbe.";
+            return "Vises pour attraper une orbe.";
         }
 
         public override void Update()

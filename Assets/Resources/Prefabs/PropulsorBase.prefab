@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4328218561075707597}
   - component: {fileID: 1861650959884597028}
   - component: {fileID: 313806303706154619}
+  - component: {fileID: 3721816083041580372}
   m_Layer: 0
   m_Name: PropulsorBase
   m_TagString: Untagged
@@ -229,3 +230,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe3e856b0f049df8b87b5a0963ba56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3721816083041580372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8268897617837369748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08328389172e9b34d8f68f29aa85ed2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  x: 1
+  y: 1
+  z: 0
