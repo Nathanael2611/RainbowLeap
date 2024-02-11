@@ -86,6 +86,12 @@ namespace Entity.Grabbables
             GameObject.Destroy(this.gameObject);
             this.parentPlanet.GenerateCircle();
             player.IncrementActions(-1);
+            AudioSource.PlayClipAtPoint(Caches.SoundCache.Get("Sound/watersplash"), this.transform.position, 2F);
+            GameObject instantiate = GameObject.Instantiate(Caches.PrefabCache.Get("Prefabs/Particles/CircleExplode"));
+            instantiate.transform.position = this.transform.position;
+            ParticleSystem component = instantiate.GetComponent<ParticleSystem>();
+            var componentMain = component.main;
+            componentMain.startColor = this._spriteRenderer.color;
         }
 
         public float GetDensity()

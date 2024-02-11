@@ -7,7 +7,7 @@ namespace UI.Tutorial
     {
         public override string GetHintText()
         {
-            return "Pour changer de direction, doublez-cliquez sur espace!";
+            return "Pour changer de direction, double-cliques sur espace!";
         }
 
 

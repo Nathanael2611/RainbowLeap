@@ -4,6 +4,7 @@ using physic;
 using Unity.VisualScripting;
 using UnityEngine;
 using Util;
+using Util.Caches;
 
 namespace Entity.Player
 {
@@ -40,6 +41,8 @@ namespace Entity.Player
         // Le collectible que la langue accroche actuellement.
         private Grabbable _grabbable;
 
+        private AudioSource _audioSource;
+
         /**
          * Définition des components.
          */
@@ -53,6 +56,10 @@ namespace Entity.Player
             rotationLock.x = true;
             rotationLock.y = true;
             rotationLock.z = true;
+            this._audioSource = this.AddComponent<AudioSource>();
+            this._audioSource.loop = true;
+            this._audioSource.clip = Caches.SoundCache.Get("Sound/rope");
+            this._audioSource.Play();
         }
 
         public void Comeback()
@@ -150,6 +157,15 @@ namespace Entity.Player
             }
 
             this._rigidbody.isKinematic = this._comeBack;
+
+            if (this._grabbable)
+            {
+                if ((Vector2.Distance(this._frog.GetRigidbody().position, this._grabbable.transform.position) + this._frog.GetCollider().radius) <=
+                    this._grabbable.GetCircleCollider().radius)
+                {
+                    this.PlayerCollideWith(this._grabbable);
+                }
+            }
             
             if (this._comeBack)
             {

@@ -5,6 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Util;
 using Util.Caches;
 
 namespace UI.Tutorial
@@ -24,6 +25,11 @@ namespace UI.Tutorial
         {
             this.TextMeshPro = this.GetComponent<TextMeshProUGUI>();
             this._typingEffeect = this.AddComponent<TypingEffeect>();
+            if (!DontRespawnTutorial.ShouldSpawnTutorial())
+            {
+                GameObject.Destroy(this.gameObject);
+                return;
+            }
         }
 
         private void OnDestroy()
@@ -49,7 +55,7 @@ namespace UI.Tutorial
             if (this.TextMeshPro.text != this._lastText)
             {
                 this._lastText = this.TextMeshPro.text;
-                this._typingEffeect.StartTyping(this._lastText.Length / 20F);
+                this._typingEffeect.StartTyping(this._lastText.Length / 15F);
             }
         }
 

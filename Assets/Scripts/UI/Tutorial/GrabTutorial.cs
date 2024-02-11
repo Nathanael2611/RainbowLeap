@@ -15,12 +15,12 @@ namespace UI.Tutorial
             if (this._secondGrabTime > 0)
             {
                 float since = Time.unscaledTime - this._secondGrabTime;
-                return since < 3 ? "Ta couleur se mélange à celle de l'orbe..." : since < 6.5F ? "Le pourcentage de ressemblance avec la planète change..." : "Parviens aux 100%!";
+                return since < 4.6f ? "Ta couleur se mélange à celle de l'orbe..." : since < 10F ? "Le pourcentage de ressemblance avec la planète change..." : "Parviens aux 100%!";
             }
             if (this._firstGrabTime > 0)
             {
                 float since = Time.unscaledTime - this._firstGrabTime;
-                return since > 2.2 ? "Essayes encore!" : "Ta couleur change...";
+                return since > 3.5 ? "Essayes encore!" : "Ta couleur change...";
             }
             return "Vises pour attraper une orbe.";
         }
@@ -32,7 +32,7 @@ namespace UI.Tutorial
             if (this._secondGrabTime > 0)
             {
                 float since = Time.unscaledTime - this._secondGrabTime;
-                if(since > 7 && !this.IsValidated())
+                if(since > 12 && !this.IsValidated())
                     this.ValidateCondition();
             }
         }

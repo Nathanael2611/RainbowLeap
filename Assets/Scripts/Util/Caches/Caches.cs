@@ -13,7 +13,9 @@ namespace Util.Caches
         public static readonly ResourceCache<Sprite> SpriteCache = new ResourceCache<Sprite>();
         
         // Le cache des Prefabs
-        public static ResourceCache<GameObject> PrefabCache = new ResourceCache<GameObject>();
+        public static readonly ResourceCache<GameObject> PrefabCache = new ResourceCache<GameObject>();
+
+        public static readonly ResourceCache<AudioClip> SoundCache = new ResourceCache<AudioClip>();
 
     }
 }

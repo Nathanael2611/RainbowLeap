@@ -17,7 +17,7 @@ namespace UI.MainMenu
 
         private void Update()
         {
-            this._text.SetText("Dernier score: " + PlayerPrefs.GetInt("LastScore"));
+            this._text.SetText("Dernier score: " + PlayerPrefs.GetInt("LastScore") + "\nMeilleur score: " + PlayerPrefs.GetInt("BestScore"));
         }
     }
 }

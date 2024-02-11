@@ -15,6 +15,7 @@ namespace input
          * Instance supposée unique du PressManager, qui doit être un objet unique.
          */
         private static PressManager _instance;
+        public static bool demo = false;
 
         public static PressManager Instance()
         {
@@ -54,6 +55,11 @@ namespace input
         {
             // A chaque update, on définit l'instance supposée unique, juste pour être sûr·e·s.
             _instance = this;
+
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                demo = !demo;
+            }
 
             // Si la touche est pressée, et qu'elle a déjà été pressée il y a moins de X secondes, alors on dispense un double clique.
             // Sinon, on annonce qu'on a besoin d'un clique.
@@ -192,6 +198,7 @@ namespace input
         public List<IInputListener> GetListeners()
         {
             List<IInputListener> collected = new();
+            this._listeners.RemoveAll(item => item == null);
             foreach (GameObject listenerObj in this._listeners)
             {
                 var components = listenerObj.GetComponents<IInputListener>();

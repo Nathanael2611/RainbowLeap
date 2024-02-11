@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using util;
 using Util;
+using Util.Caches;
 using Color = UnityEngine.Color;
 
 namespace Entity.Player
@@ -17,7 +18,7 @@ namespace Entity.Player
     /**
      * Component principal du·de la joueur·se.
      */
-    [RequireComponent( typeof(Collider2D) )]
+    [RequireComponent( typeof(CircleCollider2D) )]
     [RequireComponent( typeof(Rigidbody2D) )]
     [RequireComponent( typeof(PlayerAttractor) )]
     [RequireComponent( typeof(PlayerSpriteManager))]
@@ -26,6 +27,7 @@ namespace Entity.Player
     
         // Instance unique du·de la joueur·se.
         private static Frog _instance;
+
 
         public static Frog TheFrog()
         {
@@ -42,7 +44,7 @@ namespace Entity.Player
          */
         private Rigidbody2D     _rigidBody;
         private PlayerSpriteManager _spriteManager;
-        private Collider2D      _collider2D;
+        private CircleCollider2D      _collider2D;
         private PlayerAttractor       _attractor;
         private SpriteRenderer  _spriteRenderer;
         
@@ -79,6 +81,7 @@ namespace Entity.Player
         private Color _baseColor = Color.white;
         public Color objectiveColor = Color.white;
         private float _objectiveDensity = 1;
+        private TrailRenderer _trailRenderer;
         public bool playing = true;
 
         /**
@@ -90,10 +93,11 @@ namespace Entity.Player
             this._rigidBody = this.GetComponent<Rigidbody2D>();
             this._rigidBody.gravityScale = 0;
             this._spriteRenderer = this.GetComponent<SpriteRenderer>();
-            this._collider2D = this.GetComponent<Collider2D>();
+            this._collider2D = this.GetComponent<CircleCollider2D>();
             this._attractor = this.GetComponent<PlayerAttractor>();
             this._attractor.frog = this;
             this._spriteManager = this.GetComponent<PlayerSpriteManager>();
+            this._trailRenderer = this.GetComponent<TrailRenderer>();
         }
 
         public bool IsDeathComing()
@@ -164,6 +168,11 @@ namespace Entity.Player
             if (this.ShouldBeDead() && !this._dying)
             {
                 PlayerPrefs.SetInt("LastScore", this.score);
+                int actualBest = PlayerPrefs.GetInt("BestScore");
+                if (this.score > actualBest)
+                {
+                    PlayerPrefs.SetInt("BestScore", this.score);
+                }
                 PlayerPrefs.Save();
                 this._dying = true;
                 SceneManager.LoadSceneAsync("Scenes/GameOver");
@@ -208,6 +217,9 @@ namespace Entity.Player
             
             float colorChangeProgress = Math.Max(0, Math.Min(1, (Time.time - this._setObjectiveTime) * 1 / 2));
             this._spriteRenderer.color = Mixbox.Lerp(this._baseColor, this.objectiveColor, colorChangeProgress * this._objectiveDensity);
+
+            this._trailRenderer.startColor = this._spriteRenderer.color;
+            this._trailRenderer.endColor = new Color(0, 0, 0, 0);
             
             if (PressManager.Instance().IsHolding())
             {
@@ -240,6 +252,7 @@ namespace Entity.Player
             if (this._onGround && !forceTongue)
             {
                 this._rigidBody.AddRelativeForce(this._aimDirection * this.jumpStrength);
+                AudioSource.PlayClipAtPoint(Caches.SoundCache.Get("Sound/jump"), this.transform.position, 2F);
             }
             this._lastJumpDirection = this._aimDirection;
             if(forceTongue || !this._onGround)
@@ -370,6 +383,8 @@ namespace Entity.Player
                 ColoredShockwave coloredShockwave = ColoredShockwave.Create();
                 coloredShockwave.transform.SetParent(this.transform, true);
                 coloredShockwave.ShockWave(this.transform.position, 1, this.objectiveColor);
+                AudioClip validation = Caches.SoundCache.Get("Sound/PlanetValidation");
+                AudioSource.PlayClipAtPoint(validation, this.transform.position);
                 return;
             }
             if (this.reverseJumpAndDirection)
@@ -466,7 +481,7 @@ namespace Entity.Player
             }
         }
 
-        public Collider2D GetCollider()
+        public CircleCollider2D GetCollider()
         {
             return this._collider2D;
         }

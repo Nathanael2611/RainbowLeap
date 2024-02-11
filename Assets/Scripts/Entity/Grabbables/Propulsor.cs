@@ -1,6 +1,7 @@
 ﻿using System;
 using Entity.Player;
 using UnityEngine;
+using Util.Caches;
 
 namespace Entity.Grabbables
 {
@@ -36,6 +37,7 @@ namespace Entity.Grabbables
         {
             player.GetTongue().Comeback();
             player.GetRigidbody().AddForce(player.GetRigidbody().velocity.normalized * (player.jumpStrength));
+            AudioSource.PlayClipAtPoint(Caches.SoundCache.Get("Sound/woosh"), this.transform.position);
             //player.actions--;
         }
         

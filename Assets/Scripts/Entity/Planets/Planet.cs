@@ -5,6 +5,7 @@ using Defs;
 using Entity.Grabbables;
 using Entity.Player;
 using physic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
@@ -31,6 +32,7 @@ namespace Entity.Planets
         private CircleCollider2D _circleCollider2D;
         private SpriteRenderer _spriteRenderer;
         private Light2D _light;
+        private AudioSource _audioSource;
 
         // Seed utilisée pour sa génération.
         private uint _seed;
@@ -53,6 +55,8 @@ namespace Entity.Planets
         // True si lea joueur·se·s est en collision avec la planète. 
         private bool _collideWithPlayer;
 
+        private float lastScore = 0;
+        
         public override void Awake()
         {
             base.Awake();
@@ -69,6 +73,7 @@ namespace Entity.Planets
             this.autoPlanet = false;
             this.GetRigidBody().constraints = RigidbodyConstraints2D.FreezeAll;
             this.onlyAttractWhenPlanet = true;
+            this._audioSource = this.AddComponent<AudioSource>();
         }
 
         /**
@@ -90,12 +95,16 @@ namespace Entity.Planets
             this._light.pointLightOuterRadius = this._light.pointLightInnerRadius + 2;
 
             Frog theFrog = Frog.TheFrog();
-            if (theFrog.playing && this._collideWithPlayer && theFrog.GetSimilitude() >= 99)
+            if (theFrog.playing && this._collideWithPlayer && theFrog.GetSimilitude() >= 99 && Time.unscaledTime - this.lastScore > 0.8F)
             {   
                 ColoredShockwave shockwave = ColoredShockwave.Create();
-                theFrog.score += (int)(10 * (theFrog.actions / 2));
+                theFrog.score += Mathf.CeilToInt(10 * ((theFrog.actions * 1F / theFrog.maxActions) * 3f));
                 theFrog.IncrementActions(3);
                 shockwave.ShockWave(this.transform.position, this.size, this._spriteRenderer.color);
+                this.lastScore = Time.unscaledTime;
+                AudioClip validation = Caches.SoundCache.Get("Sound/PlanetValidation");
+                this._audioSource.clip = validation;
+                this._audioSource.Play();
                 for (int i = 0; i < 10; i++)
                 {
                     Palette randomPalette = Palette.RandomPalette(); 
@@ -251,6 +260,12 @@ namespace Entity.Planets
             if (col.rigidbody == Frog.TheFrog().GetRigidbody())
             {
                 this._collideWithPlayer = true;
+                GameObject instantiate = GameObject.Instantiate(Caches.PrefabCache.Get("Prefabs/Particles/PlanetImpact"));
+                instantiate.transform.position = col.contacts[0].point;
+                ParticleSystem component = instantiate.GetComponent<ParticleSystem>();
+                var componentMain = component.main;
+                componentMain.startColor = this._spriteRenderer.color;
+
             }
         }
 

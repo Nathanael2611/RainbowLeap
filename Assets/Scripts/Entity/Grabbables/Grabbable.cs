@@ -19,6 +19,8 @@ namespace Entity.Grabbables
          */
         protected Rigidbody2D RigidBody;
         private Attractor _attractor;
+        private CircleCollider2D _circleCollider;
+        private float _grabRadius;
 
         // La scale initiale lorsque la langue attrape l'objet. (utilisé pour rescale ensuite)
         private Vector3 _scaleOnGrab;
@@ -32,11 +34,17 @@ namespace Entity.Grabbables
         {
             this.RigidBody = this.GetComponent<Rigidbody2D>();
             this._attractor = this.GetComponent<Attractor>();
+            this._circleCollider = this.GetComponent<CircleCollider2D>();
         }
 
         public Attractor GetAttractor()
         {
             return this._attractor;
+        }
+
+        public CircleCollider2D GetCircleCollider()
+        {
+            return this._circleCollider;
         }
         
         public Vector3 GetScaleOnGrab()
@@ -55,8 +63,14 @@ namespace Entity.Grabbables
             Vector2 playerPos = player.GetRigidbody().position;
             Vector2 myPos = this.RigidBody.position;
             this._startDist = Vector2.Distance(playerPos, myPos);
+            this._grabRadius = this._circleCollider.radius;
         }
 
+        public float GrabRadius()
+        {
+            return this._grabRadius;
+        }
+        
         /**
          * A chaque frame où l'objet est tenu par la langue d'un·e joueur·se, cette fonction va être
          * appelée.

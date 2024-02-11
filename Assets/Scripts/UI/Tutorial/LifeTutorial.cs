@@ -4,6 +4,7 @@ using input;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Util;
 
 namespace UI.Tutorial
 {
@@ -18,6 +19,11 @@ namespace UI.Tutorial
             this.SetChildActives(false);
             PressManager.Instance().RegisterListener(this.gameObject);
             this._typingEffect = null;
+            if (!DontRespawnTutorial.ShouldSpawnTutorial())
+            {
+                GameObject.Destroy(this.gameObject);
+                return;
+            }
         }
 
         private void Update()
@@ -58,6 +64,8 @@ namespace UI.Tutorial
             if (this._typingEffect && !this._typingEffect.IsTyping())
             {
                 this.SetChildActives(false);
+                if (DontRespawnTutorial.ShouldSpawnTutorial())
+                    DontRespawnTutorial.MarkTutorialFinished();
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Defs;
 using Entity.Planets;
 using Entity.Player;
+using input;
 using UnityEngine;
 using util;
 using Random = Unity.Mathematics.Random;
@@ -26,13 +27,20 @@ namespace Util
         
         private void FixedUpdate()
         {
-            if (Time.time - this.lastVisibilityUpdate > 2.5F)
+            if (Time.time - this.lastVisibilityUpdate > 1)
             {
                 this.lastVisibilityUpdate = Time.time;
+                Transform frogTransform = Frog.TheFrog().transform;
                 for (int i = 0; i < this.transform.childCount; i++)
                 {
                     Transform child = this.transform.GetChild(i);
-                    child.gameObject.SetActive(Vector3.Distance(Frog.TheFrog().transform.position, child.position) < this.optimizationRange);
+                    //child.gameObject.SetActive(Vector3.Distance(Frog.TheFrog().transform.position, child.position) < this.optimizationRange);
+                    for (int j = 0; j < child.childCount; j++)
+                    {
+                        Transform t = child.GetChild(j);
+                        //Debug.Log(t + " " +  Vector3.Distance(Frog.TheFrog().transform.position, t.position));
+                        t.gameObject.SetActive(Vector3.Distance(frogTransform.position, t.position) < this.optimizationRange);
+                    }
                 }
             }
         }
@@ -42,6 +50,10 @@ namespace Util
          */
         void Start()
         {
+            if (PressManager.demo)
+            {
+                this.seed = 334828;
+            }
             // Register les palettes
             // TODO: changer ça de place, c'pas propre DU TOUT.
             Palette.RegisterPalettes();

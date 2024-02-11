@@ -662,7 +662,7 @@ MonoBehaviour:
   seed: 0
   planets: []
   planetCount: 12
-  optimizationRange: 45
+  optimizationRange: 30
   lastVisibilityUpdate: -10
 --- !u!4 &1237418701
 Transform:
